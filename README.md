@@ -4,6 +4,10 @@ A complete Neovim configuration that works seamlessly in both native Neovim and 
 
 ## 🎯 Quick Start
 
+## Prerequisites
+Neovim: [Install Neovim](https://github.com/neovim/neovim/wiki/Installing-Neovim/921fe8c40c34dd1f3fb35d5b48c484db1b8ae94b#windows)
+Visual Studio Code: [Install VSCode](https://code.visualstudio.com/download)
+
 ### For Native Neovim
 
 Just use `nvim` in your terminal - everything works automatically!
@@ -61,25 +65,19 @@ All plugins are intelligently replaced by native VSCode features when running in
 
 ### VSCode Specifics
 
-1. Install VSCode
+1. Ensure VSCode and Neovim are both installed
 
-2. Install VSCode Neovim extension:
-
-   ```powershell
-   code --install-extension asvetliakov.vscode-neovim
-   ```
-
-3. Install recommended extensions:
+2. Install the VSCode extensions from the PowerShell script in the repo:
 
    ```powershell
    .\install-vscode-extensions.ps1
    ```
 
-4. Copy keybindings from `vscode-keybindings.json` to your VSCode keybindings.json
+3. Copy keybindings from `vscode-keybindings.json` to your VSCode keybindings.json
 
-5. Copy settings from `vscode-settings.json` to you VSCode settings.json **(be sure to make sure the paths are correct for your machine)**
+4. Copy settings from `vscode-settings.json` to you VSCode settings.json **(be sure to make sure the paths are correct for your machine)**
 
-6. Reload VSCode window
+5. Reload VSCode window
 
 ## 📋 Important Files
 
