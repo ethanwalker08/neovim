@@ -6,6 +6,9 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
+-- Disable macro recording by unmapping 'q' in normal mode (behaves unexpectedly in VSCode)
+vim.keymap.set("n", "q", "<Nop>", { noremap = true, silent = true })
+
 -- This file is loaded when running inside VSCode
 -- The main init.lua will detect VSCode and load this file
 
@@ -17,20 +20,20 @@ vim.g.maplocalleader = " "
 -- will NEVER trigger a normal mode command
 vim.api.nvim_create_augroup("InsertModeProtection", { clear = true })
 vim.api.nvim_create_autocmd("ModeChanged", {
-    group = "InsertModeProtection",
-    pattern = "*:i",
-    callback = function()
-        -- When entering insert mode, disable timeout for mappings
-        vim.opt.timeout = false
-    end,
+	group = "InsertModeProtection",
+	pattern = "*:i",
+	callback = function()
+		-- When entering insert mode, disable timeout so no mappings in neovim can be triggered
+		vim.opt.timeout = false
+	end,
 })
 vim.api.nvim_create_autocmd("ModeChanged", {
-    group = "InsertModeProtection",
-    pattern = "i:*",
-    callback = function()
-        -- When leaving insert mode, re-enable timeout for mappings
-        vim.opt.timeout = true
-    end,
+	group = "InsertModeProtection",
+	pattern = "i:*",
+	callback = function()
+		-- When leaving insert mode, re-enable timeout for mappings
+		vim.opt.timeout = true
+	end,
 })
 
 -- ============================================================================
@@ -56,16 +59,16 @@ local vscode = require("vscode-neovim")
 
 -- Helper function to call VSCode commands
 local function vscodeCall(command)
-    return function()
-        vscode.call(command)
-    end
+	return function()
+		vscode.call(command)
+	end
 end
 
 -- Helper for VSCode actions with custom logic
 local function vscodeAction(command)
-    return function()
-        vscode.action(command)
-    end
+	return function()
+		vscode.action(command)
+	end
 end
 
 -- ============================================================================
@@ -78,12 +81,7 @@ vim.keymap.set("n", "<leader><leader>", vscodeCall("workbench.action.showAllEdit
 
 -- Text search
 vim.keymap.set("n", "<leader>sg", vscodeCall("workbench.action.findInFiles"), { desc = "[S]earch by [G]rep" })
-vim.keymap.set(
-    "n",
-    "<leader>sw",
-    vscodeCall("workbench.action.findInFiles"),
-    { desc = "[S]earch current [W]ord" }
-)
+vim.keymap.set("n", "<leader>sw", vscodeCall("workbench.action.findInFiles"), { desc = "[S]earch current [W]ord" })
 vim.keymap.set("n", "<leader>/", vscodeCall("workbench.action.findInFiles"), { desc = "[/] Search in buffer" })
 
 -- Diagnostics search
@@ -101,7 +99,7 @@ vim.keymap.set("n", "<leader>ss", vscodeCall("workbench.action.showCommands"), {
 
 -- Config navigation
 vim.keymap.set("n", "<leader>sn", function()
-    vscode.call("workbench.action.quickOpen", { args = { vim.fn.stdpath("config") } })
+	vscode.call("workbench.action.quickOpen", { args = { vim.fn.stdpath("config") } })
 end, { desc = "[S]earch [N]eovim files" })
 
 -- ============================================================================
@@ -128,12 +126,7 @@ vim.keymap.set("n", "<leader>gI", vscodeCall("editor.action.goToImplementation")
 vim.keymap.set("n", "gI", vscodeCall("editor.action.goToImplementation"), { desc = "Go to Implementation" })
 
 -- Go to type definition
-vim.keymap.set(
-    "n",
-    "<leader>gt",
-    vscodeCall("editor.action.goToTypeDefinition"),
-    { desc = "[G]oto [T]ype Definition" }
-)
+vim.keymap.set("n", "<leader>gt", vscodeCall("editor.action.goToTypeDefinition"), { desc = "[G]oto [T]ype Definition" })
 
 -- Peek definition
 vim.keymap.set("n", "gD", vscodeCall("editor.action.peekDefinition"), { desc = "Peek Definition" })
@@ -247,10 +240,10 @@ vim.keymap.set("n", "<leader>p", vscodeCall("workbench.action.showCommands"), { 
 -- Symbols
 vim.keymap.set("n", "<leader>so", vscodeCall("workbench.action.gotoSymbol"), { desc = "[S]earch [O]utline/Symbols" })
 vim.keymap.set(
-    "n",
-    "<leader>sO",
-    vscodeCall("workbench.action.showAllSymbols"),
-    { desc = "[S]earch All [O]utline/Symbols" }
+	"n",
+	"<leader>sO",
+	vscodeCall("workbench.action.showAllSymbols"),
+	{ desc = "[S]earch All [O]utline/Symbols" }
 )
 
 -- Zen mode
@@ -272,10 +265,10 @@ vim.keymap.set("n", "<C-A-Down>", vscodeCall("editor.action.insertCursorBelow"),
 
 -- Select all occurrences
 vim.keymap.set(
-    "n",
-    "<leader>ma",
-    vscodeCall("editor.action.selectHighlights"),
-    { desc = "[M]ulti-cursor [A]ll Occurrences" }
+	"n",
+	"<leader>ma",
+	vscodeCall("editor.action.selectHighlights"),
+	{ desc = "[M]ulti-cursor [A]ll Occurrences" }
 )
 
 -- ============================================================================
@@ -325,11 +318,11 @@ vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highl
 
 -- Highlight on yank
 vim.api.nvim_create_autocmd("TextYankPost", {
-    desc = "Highlight when yanking text",
-    group = vim.api.nvim_create_augroup("vscode-highlight-yank", { clear = true }),
-    callback = function()
-        vim.highlight.on_yank()
-    end,
+	desc = "Highlight when yanking text",
+	group = vim.api.nvim_create_augroup("vscode-highlight-yank", { clear = true }),
+	callback = function()
+		vim.highlight.on_yank()
+	end,
 })
 
 -- ============================================================================
