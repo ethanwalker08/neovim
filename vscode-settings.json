@@ -1,5 +1,6 @@
 {
   "workbench.colorTheme": "Atom One Dark",
+  "editor.semanticHighlighting.enabled": true,
   "workbench.iconTheme": "vscode-icons",
   "editor.stickyScroll.enabled": false,
   "files.autoSave": "onFocusChange",
@@ -29,7 +30,6 @@
   "dart.debugSdkLibraries": false,
   "editor.minimap.enabled": false,
   "workbench.startupEditor": "none",
-  "editor.formatOnSave": true,
   "vsicons.dontShowNewVersionMessage": true,
   "terminal.integrated.allowedLinkSchemes": [
     "file",
@@ -55,22 +55,170 @@
     "scminput": false
   },
   "chat.mcp.autostart": "newAndOutdated",
-  "dart.flutterSdkPath": "E:\\Flutter\\flutter",
   "terminal.integrated.fontFamily": "MesloLGL Nerd Font Mono",
   "vscode-neovim.neovimExecutablePaths.win32": "C:\\Program Files\\Neovim\\bin\\nvim.exe",
   "extensions.experimental.affinity": {
     "asvetliakov.vscode-neovim": 1
   },
-  "vscode-neovim.neovimInitVimPaths.win32": "C:\\Users\\YourUser\\AppData\\Local\\nvim\\init.lua",
-  "vscode-neovim.ctrlKeysForInsertMode": [
-  ],
-  "vscode-neovim.ctrlKeysForNormalMode": [
-  ],
-  "vscode-neovim.compositeTimeout": 1000,
+  "vscode-neovim.ctrlKeysForInsertMode": [],
+  "vscode-neovim.compositeTimeout": 400,
   "vscode-neovim.logOutputToConsole": false,
   "workbench.list.typeNavigationMode": "automatic",
   "editor.renderWhitespace": "none",
   "editor.guides.indentation": true,
   "editor.occurrencesHighlight": "singleFile",
-  "editor.selectionHighlight": true
+  "editor.selectionHighlight": true,
+  "chat.tools.terminal.autoApprove": {
+    "New-Item": true,
+    "flutter": true
+  },
+  "chat.mcp.gallery.enabled": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "never",
+  },
+  "diffEditor.ignoreTrimWhitespace": false,
+  "files.associations": {
+    "*.toml": "toml",
+    "*.json": "json"
+  },
+  "dart.analysisServerFolding": false,
+  "dart.analyzeAngularTemplates": false,
+  "dart.checkForSdkUpdates": false,
+  "dart.devToolsBrowser": "default",
+  "dart.documentation": "summary",
+  "dart.hotReloadProgress": "statusBar",
+  "dart.inlayHints": true,
+  "dart.normalizeFileCasing": true,
+  "dart.previewFlutterUiGuides": true,
+  "dart.previewFlutterUiGuidesCustomTracking": true,
+  "dart.previewHotReloadOnSaveWatcher": true,
+  "dart.projectSearchDepth": 2,
+  "dart.promptToRunIfErrors": false,
+  "dart.renameFilesWithClasses": "always",
+  "dart.runPubGetOnPubspecChanges": "prompt",
+  "dart.showDartPadSampleCodeLens": false,
+  "dart.showDebuggerNumbersAsHex": true,
+  "dart.showInspectorNotificationsForWidgetErrors": false,
+  "dart.showSkippedTests": false,
+  "dart.showTodos": [
+    "TODO",
+    "FIXME",
+    "WARN",
+    "NOTE",
+    "ERROR",
+    "WARNING"
+  ],
+  "dart.suppressTestTimeouts": "always",
+  "dart.updateDevTools": false,
+  "[dart]": {
+    "editor.defaultFormatter": "Dart-Code.flutter",
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true,
+    "editor.mouseWheelZoom": true,
+    "editor.tabSize": 2,
+    "editor.detectIndentation": true,
+    "files.autoSave": "off",
+    "editor.accessibilitySupport": "off"
+  },
+  "zenMode.fullScreen": false,
+  "zenMode.centerLayout": false,
+  "zenMode.hideActivityBar": false,
+  "zenMode.hideStatusBar": false,
+  "zenMode.restore": false,
+  "window.autoDetectHighContrast": false,
+  "chat.tools.global.autoApprove": true,
+  "chat.agent.maxRequests": 100,
+  "chat.instructionsFilesLocations": {
+    ".github/instructions": true
+  },
+  "pgsql.enableQueryHistoryCapture": false,
+  "todo-tree.general.automaticGitRefreshInterval": 10,
+  "todo-tree.general.periodicRefreshInterval": 3,
+  "todo-tree.general.tags": [
+    "BUG",
+    "HACK",
+    "FIXME",
+    "TODO",
+    "NOTE",
+    "WARN",
+    "WARNING",
+    "DEBUG",
+  ],
+  "todo-tree.highlights.useColourScheme": true,
+  "todo-tree.highlights.customHighlight": {
+    "BUG": {
+      "foreground": "#ececec",
+      "background": "#ff0000",
+      "opacity": 75,
+      "icon": "bug"
+    },
+    "HACK": {
+      "foreground": "#000000",
+      "background": "#ff48",
+      "opacity": 65
+    },
+    "FIXME": {
+      "background": "#ffc400",
+      "foreground": "#000000",
+      "opacity": 0
+    },
+    "TODO": {
+      "foreground": "#ececec",
+      "background": "#38c957",
+      "opacity": 80
+    },
+    "NOTE": {
+      "icon": "info",
+      "foreground": "#FFFFFF",
+      "background": "#ac72bd",
+      "opacity": 70
+    },
+    "DEBUG": {
+      "icon": "bug",
+      "foreground": "#FFFFFF",
+      "background": "#ac72bd",
+      "opacity": 70,
+      "gutterIcon": true,
+      "iconColour": "#ac72bd",
+    },
+    "WARN": {
+      "icon": "info",
+      "foreground": "#FFFFFF",
+      "background": "#ac72bd",
+      "opacity": 70
+    },
+  },
+  "vscode-neovim.ctrlKeysForNormalMode": [],
+  "vscode-neovim.neovimViewportHeightExtend": 3,
+  "chat.useAgentSkills": true,
+  "[dockercompose]": {
+    "editor.defaultFormatter": "docker.docker"
+  },
+  "docker.extension.enableComposeLanguageServer": false,
+  "python-envs.defaultPackageManager": "ms-python.python:uv",
+  "python.terminal.useEnvFile": true,
+  "[markdown]": {
+    "editor.defaultFormatter": "DavidAnson.vscode-markdownlint"
+  },
+  "ruff.configurationPreference": "filesystemFirst",
+  "ruff.nativeServer": true,
+  "python.missingPackage.severity": "Error",
+  "github.copilot.selectedCompletionModel": "",
+  "github.copilot.chat.useResponsesApi": false,
+  "terminal.external.windowsExec": "C:\\Users\\YourUser\\AppData\\Local\\Microsoft\\WindowsApps\\wt.exe",
+  "[svelte]": {
+    "editor.defaultFormatter": "svelte.svelte-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[sql]": {
+    "editor.defaultFormatter": "ms-ossdata.vscode-pgsql"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
 }
