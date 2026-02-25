@@ -108,5 +108,5 @@
     "key": "space q q",
     "command": "workbench.action.closeActiveEditor",
     "when": "neovim.mode == normal && editorTextFocus"
-  },
+  }
 ]

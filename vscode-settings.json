@@ -1,23 +1,14 @@
 {
   "workbench.colorTheme": "Atom One Dark",
   "editor.semanticHighlighting.enabled": true,
-  "workbench.iconTheme": "vscode-icons",
   "editor.stickyScroll.enabled": false,
-  "files.autoSave": "onFocusChange",
-  "editor.fontFamily": "MesloLGL Nerd Font Mono",
+  "editor.fontFamily": "FiraCode Nerd Font Mono",
   "editor.fontLigatures": false,
   "terminal.integrated.copyOnSelection": true,
   "terminal.integrated.cursorBlinking": true,
   "terminal.integrated.defaultProfile.windows": "PowerShell",
   "terminal.integrated.enableImages": true,
-  "terminal.integrated.gpuAcceleration": "on",
   "terminal.integrated.suggest.enabled": true,
-  "terminal.integrated.profiles.windows": {
-    "PowerShell": {
-      "source": "PowerShell",
-      "icon": "terminal-powershell"
-    }
-  },
   "svelte.plugin.svelte.defaultScriptLanguage": "ts",
   "svelte.enable-ts-plugin": true,
   "git.confirmSync": false,
@@ -28,7 +19,6 @@
   "typescript.updateImportsOnFileMove.enabled": "always",
   "dart.debugExternalPackageLibraries": false,
   "dart.debugSdkLibraries": false,
-  "editor.minimap.enabled": false,
   "workbench.startupEditor": "none",
   "vsicons.dontShowNewVersionMessage": true,
   "terminal.integrated.allowedLinkSchemes": [
@@ -45,7 +35,6 @@
       "protocol": "http"
     }
   },
-  "workbench.editor.enablePreview": false,
   "github.copilot.nextEditSuggestions.enabled": true,
   "update.showReleaseNotes": false,
   "github.copilot.enable": {
@@ -54,8 +43,7 @@
     "markdown": false,
     "scminput": false
   },
-  "chat.mcp.autostart": "newAndOutdated",
-  "terminal.integrated.fontFamily": "MesloLGL Nerd Font Mono",
+  "chat.mcp.autostart": "onlyNew",
   "vscode-neovim.neovimExecutablePaths.win32": "C:\\Program Files\\Neovim\\bin\\nvim.exe",
   "extensions.experimental.affinity": {
     "asvetliakov.vscode-neovim": 1
@@ -73,14 +61,7 @@
     "flutter": true
   },
   "chat.mcp.gallery.enabled": true,
-  "editor.codeActionsOnSave": {
-    "source.fixAll": "never",
-  },
   "diffEditor.ignoreTrimWhitespace": false,
-  "files.associations": {
-    "*.toml": "toml",
-    "*.json": "json"
-  },
   "dart.analysisServerFolding": false,
   "dart.analyzeAngularTemplates": false,
   "dart.checkForSdkUpdates": false,
@@ -127,10 +108,6 @@
   "zenMode.restore": false,
   "window.autoDetectHighContrast": false,
   "chat.tools.global.autoApprove": true,
-  "chat.agent.maxRequests": 100,
-  "chat.instructionsFilesLocations": {
-    ".github/instructions": true
-  },
   "pgsql.enableQueryHistoryCapture": false,
   "todo-tree.general.automaticGitRefreshInterval": 10,
   "todo-tree.general.periodicRefreshInterval": 3,
@@ -194,20 +171,18 @@
   "[dockercompose]": {
     "editor.defaultFormatter": "docker.docker"
   },
-  "docker.extension.enableComposeLanguageServer": false,
   "python-envs.defaultPackageManager": "ms-python.python:uv",
   "python.terminal.useEnvFile": true,
   "[markdown]": {
     "editor.defaultFormatter": "DavidAnson.vscode-markdownlint"
   },
   "ruff.configurationPreference": "filesystemFirst",
-  "ruff.nativeServer": true,
   "python.missingPackage.severity": "Error",
   "github.copilot.selectedCompletionModel": "",
   "github.copilot.chat.useResponsesApi": false,
   "terminal.external.windowsExec": "C:\\Users\\YourUser\\AppData\\Local\\Microsoft\\WindowsApps\\wt.exe",
   "[svelte]": {
-    "editor.defaultFormatter": "svelte.svelte-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
@@ -221,4 +196,22 @@
   "[html]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
+  "gitlens.ai.model": "vscode",
+  "gitlens.ai.vscode.model": "copilot:gpt-4.1",
+  "terminal.integrated.confirmOnKill": "always",
+  "terminal.integrated.localEchoExcludePrograms": [
+    "vim",
+    "vi",
+    "nano",
+    "tmux",
+    "nvim"
+  ],
+  "terminal.integrated.suggest.quickSuggestions": {
+    "arguments": "on",
+    "commands": "on"
+  },
+  "editor.minimap.enabled": false,
+  "workbench.iconTheme": "vscode-icons",
+  "workbench.editor.enablePreview": false,
+  "chat.agent.maxRequests": 100
 }

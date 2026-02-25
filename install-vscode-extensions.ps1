@@ -11,7 +11,8 @@ $requiredExtensions = @(
     "asvetliakov.vscode-neovim"  # VSCode Neovim
 )
 
-foreach ($ext in $requiredExtensions) {
+foreach ($ext in $requiredExtensions)
+{
     Write-Host "Installing: $ext"
     code --install-extension $ext --force
 }
@@ -20,22 +21,20 @@ Write-Host ""
 Write-Host "Installing RECOMMENDED extensions..." -ForegroundColor Yellow
 
 # Recommended Extensions
-$recommendedExtensions = @(
-    "eamodio.gitlens",                          # GitLens (Git integration)
-    "aaron-bond.better-comments",               # Better Comments
-    "formulahendry.auto-close-tag",             # Auto Close Tag
-    "formulahendry.auto-rename-tag",            # Auto Rename Tag
-    "kamikillerto.vscode-colorize",             # Colorize
-    "esbenp.prettier-vscode",                   # Prettier
-    "Dart-Code.flutter",                        # Flutter
-    "Dart-Code.dart-code",                      # Dart
-    "bradlc.vscode-tailwindcss",                # Tailwind CSS (if using Tailwind)
-    "dbaeumer.vscode-eslint",                   # ESLint
-    "ms-python.python",                         # Python
-    "ms-python.vscode-pylance"                  # Pylance (Python LSP)
-)
+# Get extensions from extensions.json
+$extensionsFile = "extensions.json"
+if (Test-Path $extensionsFile)
+{
+    # Get all the extension IDs from the JSON file under the identifier.id key
+    $recommendedExtensions = Get-Content $extensionsFile | ConvertFrom-Json | ForEach-Object { $_.identifier.id }
+} else
+{
+    Write-Host "Warning: $extensionsFile not found. No recommended extensions will be installed." -ForegroundColor Red
+    $recommendedExtensions = @()
+}
 
-foreach ($ext in $recommendedExtensions) {
+foreach ($ext in $recommendedExtensions)
+{
     Write-Host "Installing: $ext"
     code --install-extension $ext --force
 }
