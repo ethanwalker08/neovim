@@ -37,6 +37,18 @@ return { -- Fuzzy Finder (files, lsp, etc)
 			},
 		})
 
+		-- Runtime guard: ensure nvim-treesitter.parsers.ft_to_lang exists
+		-- This avoids modifying files under ~/.local/share and prevents
+		-- Telescope from erroring when the parser API differs.
+		pcall(function()
+			local ok, parsers = pcall(require, "nvim-treesitter.parsers")
+			if ok and type(parsers.ft_to_lang) ~= "function" then
+				parsers.ft_to_lang = function(ft)
+					return ft
+				end
+			end
+		end)
+
 		-- Enable Telescope extensions if they are installed
 		pcall(require("telescope").load_extension, "fzf")
 		pcall(require("telescope").load_extension, "ui-select")
