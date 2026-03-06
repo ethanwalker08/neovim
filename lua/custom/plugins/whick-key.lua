@@ -6,18 +6,10 @@ return { -- Useful plugin to show you pending keybinds.
 			-- set icon mappings to true if you have a Nerd Font
 			mappings = vim.g.have_nerd_font,
 		},
-		spec = {
-			{ "<leader>r", group = "[R]ename" },
-			{ "<leader>s", group = "[S]earch" },
-			{ "<leader>w", group = "[W]rite" },
-			{ "<leader>g", group = "[G]oto" },
-			{ "<leader>l", group = "[L]azyGit" },
-			{ "<leader>x", group = "View Issues" },
-			{ "<leader>q", group = "[Q]uit" },
-			{ "<leader>c", group = "[C]ode [A]ctions" },
-			{ "<leader>d", group = "[D]ebugger" },
-			{ "<leader>dh", group = "[D]ebug [H]over variables" },
-			{ "<leader>df", group = "[D]ebug [F]lutter" },
-		},
+		spec = require("custom.keymaps").which_key_groups(),
 	},
+	config = function(_, opts)
+		require("which-key").setup(opts)
+		require("custom.keymaps").setup_which_key_navigation()
+	end,
 }

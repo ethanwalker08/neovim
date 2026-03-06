@@ -2,18 +2,11 @@ return {
 	-- GitHub Copilot
 	"github/copilot.vim",
 	event = "BufEnter",
+	init = function()
+		-- Disable Copilot's default Tab mapping so our custom mapping controls behavior.
+		vim.g.copilot_no_tab_map = true
+	end,
 	config = function()
-		-- Smart Tab Completion: Copilot -> nvim-cmp -> fallback
-		vim.keymap.set("i", "<Tab>", function()
-			if vim.fn["copilot#Accept"]() ~= "" then
-				return vim.fn["copilot#Accept"]()
-			end
-			local cmp = require("cmp")
-			if cmp.visible() then
-				cmp.select_next_item()
-			else
-				return "<Tab>"
-			end
-		end, { expr = true, silent = true })
+		require("custom.keymaps").setup_copilot_tab()
 	end,
 }

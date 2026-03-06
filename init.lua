@@ -33,6 +33,7 @@ end)
 -- Displays which-key popup sooner
 vim.opt.timeoutlen = 300
 
+require("custom.keymaps").setup()
 vim.api.nvim_create_autocmd("TextYankPost", {
 	desc = "Highlight when yanking (copying) text",
 	group = vim.api.nvim_create_augroup("kickstart-highlight-yank", { clear = true }),
@@ -123,11 +124,3 @@ export const load = async () => {
 	print("SvelteKit route created at " .. base_path)
 end
 
--- Map <leader>N to create a new SvelteKit route
-vim.api.nvim_set_keymap(
-	"n",
-	"<leader>N",
-	":lua CreateSveltekitRoute()<CR>",
-	{ noremap = true, silent = true, desc = "[N]ew SvelteKit Route" }
-)
-require("lspconfig").denols.setup({})

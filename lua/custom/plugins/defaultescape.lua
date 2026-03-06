@@ -4,8 +4,6 @@ return {
 	opts = {
 		timeout = 300,
 		default_mappings = false,
-		mappings = {
-			i = { j = { k = "<Esc>", j = "<Esc>" } },
-		},
+		mappings = require("custom.keymaps").better_escape_mappings(),
 	},
 }

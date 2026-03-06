@@ -43,7 +43,7 @@ Just type `nvim` in your terminal - everything works automatically!
 
 - lazy.nvim - Plugin manager
 - telescope.nvim - Fuzzy finder (PEAK NEOVIM)
-- neo-tree.nvim - File explorer
+- nvim-tree.lua - File explorer
 - LSPConfig + Mason - Automatic language spec downloading 
     - Neovim doesnt automatically via your lsp config know all the syntax highlighting or code completion stuff without Mason. You will need this, I recommend you never delete this or the LSP Config.
 - nvim-cmp - Useful for code completions, refactoring via code actions, code doc references, etc.
