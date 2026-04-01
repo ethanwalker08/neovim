@@ -250,12 +250,9 @@ local KEYMAPS = {
 		mode = "n",
 		lhs = "<leader>/",
 		rhs = function()
-			local opts = require("telescope.themes").get_dropdown({
-				winblend = 10,
-				previewer = false,
-			})
-			opts.bufnr = vim.api.nvim_get_current_buf()
-			require("telescope.builtin").current_buffer_fuzzy_find(opts)
+			require("telescope.builtin").current_buffer_fuzzy_find()
+			-- Fuzzy find in current buffer, but show full results when no query to allow browsing.
+			-- This is a bit different than the default which requires at least one character to show results.
 		end,
 		desc = "[/] Fuzzily search in current buffer",
 	},
