@@ -59,20 +59,6 @@ local KEYMAPS = {
 		type = "map",
 		scope = "global",
 		mode = "n",
-		lhs = "<leader>N",
-		rhs = function()
-			if type(_G.CreateSveltekitRoute) == "function" then
-				_G.CreateSveltekitRoute()
-			else
-				vim.notify("CreateSveltekitRoute() is not available", vim.log.levels.WARN)
-			end
-		end,
-		desc = "[N]ew SvelteKit Route",
-	},
-	{
-		type = "map",
-		scope = "global",
-		mode = "n",
 		lhs = "<leader>qb",
 		rhs = "<Cmd>BufferClose<CR>",
 		desc = "[Q]uit (close) [B]uffer",
