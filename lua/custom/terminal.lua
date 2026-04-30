@@ -21,6 +21,24 @@ function config.setup()
 
 	local terminal_state = { buf = nil, win = nil, is_open = false }
 
+	local function get_terminal_shell()
+		if vim.o.shell ~= "" then
+			return vim.o.shell
+		end
+
+		return os.getenv("SHELL") or "sh"
+	end
+
+	local function open_terminal_job()
+		local cwd = vim.fn.getcwd()
+		vim.fn.termopen(get_terminal_shell(), {
+			cwd = cwd,
+			env = {
+				NVIM_FLOATING_TERM_CWD = cwd,
+			},
+		})
+	end
+
 	local function FloatingTerminal()
 		if terminal_state.is_open and terminal_state.win and vim.api.nvim_win_is_valid(terminal_state.win) then
 			vim.api.nvim_win_close(terminal_state.win, false)
@@ -62,7 +80,7 @@ function config.setup()
 			end
 		end
 		if not has_terminal then
-			vim.fn.termopen(os.getenv("SHELL"))
+			open_terminal_job()
 		end
 
 		terminal_state.is_open = true
