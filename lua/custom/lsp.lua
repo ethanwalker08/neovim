@@ -99,12 +99,22 @@ function lsp.setup()
 	vim.lsp.config("gopls", {})
 	vim.lsp.config("clangd", {})
 
+	local function accept_copilot_suggestion()
+		local ok, suggestion = pcall(require, "copilot.suggestion")
+		if not ok or not suggestion.is_visible() then
+			return
+		end
+
+		suggestion.accept()
+		return true
+	end
+
 	require("blink.cmp").setup({
 		keymap = {
 			preset = "none",
 			["<C-Space>"] = { "show", "hide" },
 			["<CR>"] = { "accept", "fallback" },
-			["<Tab>"] = { "select_next", "fallback" },
+			["<Tab>"] = { accept_copilot_suggestion, "select_next", "snippet_forward", "fallback" },
 			["<C-Tab>"] = { "select_prev", "fallback" },
 			["<Right>"] = { "snippet_forward", "fallback" },
 			["<Left>"] = { "snippet_backward", "fallback" },
@@ -129,7 +139,7 @@ function lsp.setup()
 				},
 			},
 			ghost_text = {
-				show_with_selection = true,
+				enabled = false,
 			},
 		},
 		sources = {
