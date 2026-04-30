@@ -1,4 +1,20 @@
 local p = {}
+
+local prettier_filetypes = {
+	"javascript",
+	"javascriptreact",
+	"typescript",
+	"typescriptreact",
+	"svelte",
+	"html",
+	"css",
+	"scss",
+	"json",
+	"jsonc",
+	"yaml",
+	"markdown",
+}
+
 function p.setup()
 	--- Plugins (pre-config) ---
 	vim.pack.add({
@@ -15,6 +31,7 @@ function p.setup()
 		"https://www.github.com/neovim/nvim-lspconfig",
 		"https://github.com/mason-org/mason.nvim",
 		"https://github.com/mason-org/mason-lspconfig.nvim",
+		"https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim",
 		{
 			src = "https://github.com/saghen/blink.cmp",
 			version = vim.version.range("1.*"),
@@ -119,16 +136,58 @@ function p.setup()
 		indent = { enabled = true, animate = { enabled = false } },
 	})
 
+	local conform_util = require("conform.util")
+	local prettier_root_files = {
+		".prettierrc",
+		".prettierrc.json",
+		".prettierrc.yml",
+		".prettierrc.yaml",
+		".prettierrc.json5",
+		".prettierrc.js",
+		".prettierrc.cjs",
+		".prettierrc.mjs",
+		".prettierrc.toml",
+		"prettier.config.js",
+		"prettier.config.cjs",
+		"prettier.config.mjs",
+		"prettier.config.ts",
+		"package.json",
+	}
+	local prettier_cwd = conform_util.root_file(prettier_root_files)
+	local formatters_by_ft = {
+		lua = { "stylua" },
+		python = { "ruff_format" },
+	}
+
+	for _, filetype in ipairs(prettier_filetypes) do
+		formatters_by_ft[filetype] = { "prettierd", "prettier", stop_after_first = true }
+	end
+
 	require("conform").setup({
-		formatters_by_ft = {
-			lua = { "stylua" },
-			-- Conform will run multiple formatters sequentially
-			python = { "isort", "black" },
-			-- You can customize some of the format options for the filetype (:help conform.format)
-			rust = { "rustfmt", lsp_format = "fallback" },
-			-- Conform will run the first available formatter
-			javascript = { "prettierd", "prettier", stop_after_first = true },
+		notify_on_error = false,
+		format_on_save = function()
+			return {
+				timeout_ms = 750,
+				lsp_format = "fallback",
+			}
+		end,
+		formatters = {
+			prettierd = {
+				cwd = prettier_cwd,
+				require_cwd = true,
+				condition = function(ctx)
+					return prettier_cwd(ctx) ~= nil
+				end,
+			},
+			prettier = {
+				cwd = prettier_cwd,
+				require_cwd = true,
+				condition = function(ctx)
+					return prettier_cwd(ctx) ~= nil
+				end,
+			},
 		},
+		formatters_by_ft = formatters_by_ft,
 	})
 end
 return p

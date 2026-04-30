@@ -5,26 +5,28 @@ function config.setup()
 	local ensure_installed = {
 		"vim",
 		"vimdoc",
-		"rust",
-		"c",
-		"cpp",
-		"go",
+		"lua",
+		"luadoc",
+		"query",
+		"bash",
 		"html",
 		"css",
+		"scss",
 		"javascript",
-		"json",
-		"lua",
-		"markdown",
-		"python",
 		"typescript",
-		"vue",
+		"tsx",
 		"svelte",
-		"bash",
+		"json",
+		"yaml",
+		"toml",
+		"markdown",
+		"markdown_inline",
+		"python",
 	}
 
-	local config = require("nvim-treesitter.config")
+	local treesitter_config = require("nvim-treesitter.config")
 
-	local already_installed = config.get_installed()
+	local already_installed = treesitter_config.get_installed()
 	local parsers_to_install = {}
 
 	for _, parser in ipairs(ensure_installed) do

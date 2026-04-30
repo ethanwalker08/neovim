@@ -121,7 +121,10 @@ local KEYMAPS = {
 		mode = "n",
 		lhs = "<leader>f",
 		rhs = function()
-			conform.format()
+			conform.format({
+				async = true,
+				lsp_format = "fallback",
+			})
 		end,
 		desc = "[F]ormat buffer",
 	},
