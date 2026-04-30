@@ -11,15 +11,10 @@ A complete Neovim configuration that works out right after installing neovim on 
 
 Just type `nvim` in your terminal - everything works automatically!
 
-## ✨ Packages
-
-- ✅ Package Manager used: lazy.nvim
-- All packages are loaded inside the /lua/custom/plugins directory and each lua file is a plugin with any plugin specific info or keybindings.
-
 ## 🔑 Using Key Bindings
 
 - In neovim, the `leader` key is defined per config and allows you to set custom commands after pressing it, most times it's set to the space bar key so that is what this config does too.
-    - When you are in `n` (normal), clicking the space bar will show a menu through the 'which-key' plugin that shows you what options you have for commands. Commands may have subcommands after that too, so for example if you type 'space', 'c', 'a' sequentially, the 'space' initiates a command, then the 'c' means you want to do a 'code' type thing using your LSP, and the 'a' part specifies you want to see the code actions possible for the symbol under your cursor.
+    - When you are in `n` (normal), clicking the space bar will show a menu plugin that shows you what options you have for commands. Commands may have subcommands after that too, so for example if you type 'space', 'c', 'a' sequentially, the 'space' initiates a command, then the 'c' means you want to do a 'code' type thing using your LSP, and the 'a' part specifies you want to see the code actions possible for the symbol under your cursor.
 
 ## 🔧 Configuration
 
