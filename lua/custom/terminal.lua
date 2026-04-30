@@ -1,11 +1,134 @@
-local config = {}
+local M = {}
 
-function config.setup()
-	local function set_float_highlights()
-		vim.api.nvim_set_hl(0, "FloatingTermNormal", { bg = "none" })
-		vim.api.nvim_set_hl(0, "FloatingTermBorder", { bg = "none" })
+local terminal_states = {
+	shell = { buf = nil, win = nil, is_open = false, job_id = nil },
+	copilot = { buf = nil, win = nil, is_open = false, job_id = nil },
+}
+
+local function set_float_highlights()
+	vim.api.nvim_set_hl(0, "FloatingTermNormal", { bg = "none" })
+	vim.api.nvim_set_hl(0, "FloatingTermBorder", { bg = "none" })
+end
+
+local function close_terminal(state)
+	if state.win and vim.api.nvim_win_is_valid(state.win) then
+		vim.api.nvim_win_close(state.win, false)
 	end
 
+	state.win = nil
+	state.is_open = false
+end
+
+local function close_other_terminals(active_name)
+	for name, state in pairs(terminal_states) do
+		if name ~= active_name and state.is_open then
+			close_terminal(state)
+		end
+	end
+end
+
+local function get_terminal_shell()
+	if vim.o.shell ~= "" then
+		return vim.o.shell
+	end
+
+	return os.getenv("SHELL") or "sh"
+end
+
+local function ensure_terminal_buffer(state)
+	if state.buf and vim.api.nvim_buf_is_valid(state.buf) then
+		return
+	end
+
+	state.buf = vim.api.nvim_create_buf(false, true)
+	vim.bo[state.buf].bufhidden = "hide"
+	state.job_id = nil
+end
+
+local function is_job_running(job_id)
+	if not job_id or job_id <= 0 then
+		return false
+	end
+
+	return vim.fn.jobwait({ job_id }, 0)[1] == -1
+end
+
+local function open_terminal_job(state, command, kind)
+	local cwd = vim.fn.getcwd()
+
+	state.job_id = vim.fn.termopen(command, {
+		cwd = cwd,
+		env = {
+			NVIM_FLOATING_TERM_CWD = cwd,
+			NVIM_FLOATING_TERM_KIND = kind,
+		},
+	})
+end
+
+local function open_floating_terminal(name, command)
+	local state = terminal_states[name]
+
+	if state.is_open and state.win and vim.api.nvim_win_is_valid(state.win) then
+		close_terminal(state)
+		return
+	end
+
+	close_other_terminals(name)
+	ensure_terminal_buffer(state)
+
+	local width = math.floor(vim.o.columns * 0.8)
+	local height = math.floor(vim.o.lines * 0.8)
+	local row = math.floor((vim.o.lines - height) / 2)
+	local col = math.floor((vim.o.columns - width) / 2)
+
+	state.win = vim.api.nvim_open_win(state.buf, true, {
+		relative = "editor",
+		width = width,
+		height = height,
+		row = row,
+		col = col,
+		style = "minimal",
+		border = "rounded",
+	})
+
+	vim.wo[state.win].winblend = 0
+	vim.wo[state.win].winhighlight = "Normal:FloatingTermNormal,FloatBorder:FloatingTermBorder"
+
+	if not is_job_running(state.job_id) then
+		open_terminal_job(state, command, name)
+	end
+
+	state.is_open = true
+	vim.cmd("startinsert")
+
+	vim.api.nvim_create_autocmd("BufLeave", {
+		buffer = state.buf,
+		callback = function()
+			if state.is_open and state.win and vim.api.nvim_win_is_valid(state.win) then
+				close_terminal(state)
+			end
+		end,
+		once = true,
+	})
+end
+
+function M.toggle()
+	open_floating_terminal("shell", get_terminal_shell())
+end
+
+function M.open_copilot()
+	open_floating_terminal("copilot", { "copilot" })
+end
+
+function M.close()
+	for _, state in pairs(terminal_states) do
+		if state.is_open then
+			close_terminal(state)
+		end
+	end
+end
+
+function M.setup()
 	set_float_highlights()
 
 	vim.api.nvim_create_autocmd("ColorScheme", {
@@ -15,9 +138,20 @@ function config.setup()
 
 	vim.api.nvim_create_autocmd("TermClose", {
 		group = augroup,
-		callback = function()
-			if vim.v.event.status == 0 then
-				vim.api.nvim_buf_delete(0, {})
+		callback = function(args)
+			for _, state in pairs(terminal_states) do
+				if state.buf == args.buf then
+					state.job_id = nil
+					state.win = nil
+					state.is_open = false
+
+					if vim.v.event.status == 0 and vim.api.nvim_buf_is_valid(args.buf) then
+						vim.api.nvim_buf_delete(args.buf, {})
+						state.buf = nil
+					end
+
+					break
+				end
 			end
 		end,
 	})
@@ -30,92 +164,6 @@ function config.setup()
 			vim.opt_local.signcolumn = "no"
 		end,
 	})
-
-	local terminal_state = { buf = nil, win = nil, is_open = false }
-
-	local function get_terminal_shell()
-		if vim.o.shell ~= "" then
-			return vim.o.shell
-		end
-
-		return os.getenv("SHELL") or "sh"
-	end
-
-	local function open_terminal_job()
-		local cwd = vim.fn.getcwd()
-		vim.fn.termopen(get_terminal_shell(), {
-			cwd = cwd,
-			env = {
-				NVIM_FLOATING_TERM_CWD = cwd,
-			},
-		})
-	end
-
-	local function FloatingTerminal()
-		if terminal_state.is_open and terminal_state.win and vim.api.nvim_win_is_valid(terminal_state.win) then
-			vim.api.nvim_win_close(terminal_state.win, false)
-			terminal_state.is_open = false
-			return
-		end
-
-		if not terminal_state.buf or not vim.api.nvim_buf_is_valid(terminal_state.buf) then
-			terminal_state.buf = vim.api.nvim_create_buf(false, true)
-			vim.bo[terminal_state.buf].bufhidden = "hide"
-		end
-
-		local width = math.floor(vim.o.columns * 0.8)
-		local height = math.floor(vim.o.lines * 0.8)
-		local row = math.floor((vim.o.lines - height) / 2)
-		local col = math.floor((vim.o.columns - width) / 2)
-
-		terminal_state.win = vim.api.nvim_open_win(terminal_state.buf, true, {
-			relative = "editor",
-			width = width,
-			height = height,
-			row = row,
-			col = col,
-			style = "minimal",
-			border = "rounded",
-		})
-
-		vim.wo[terminal_state.win].winblend = 0
-		vim.wo[terminal_state.win].winhighlight = "Normal:FloatingTermNormal,FloatBorder:FloatingTermBorder"
-
-		local has_terminal = false
-		local lines = vim.api.nvim_buf_get_lines(terminal_state.buf, 0, -1, false)
-		for _, line in ipairs(lines) do
-			if line ~= "" then
-				has_terminal = true
-				break
-			end
-		end
-		if not has_terminal then
-			open_terminal_job()
-		end
-
-		terminal_state.is_open = true
-		vim.cmd("startinsert")
-
-		vim.api.nvim_create_autocmd("BufLeave", {
-			buffer = terminal_state.buf,
-			callback = function()
-				if terminal_state.is_open and terminal_state.win and vim.api.nvim_win_is_valid(terminal_state.win) then
-					vim.api.nvim_win_close(terminal_state.win, false)
-					terminal_state.is_open = false
-				end
-			end,
-			once = true,
-		})
-	end
-
-	vim.keymap.set("n", "<leader>t", FloatingTerminal,
-		{ noremap = true, silent = true, desc = "Toggle floating terminal" })
-	vim.keymap.set("t", "<Esc>", function()
-		if terminal_state.is_open and terminal_state.win and vim.api.nvim_win_is_valid(terminal_state.win) then
-			vim.api.nvim_win_close(terminal_state.win, false)
-			terminal_state.is_open = false
-		end
-	end, { noremap = true, silent = true, desc = "Close floating terminal" })
 end
 
-return config
+return M

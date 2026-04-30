@@ -1,4 +1,5 @@
 local conform = require("conform")
+local terminal = require("custom.terminal")
 -- ================================================
 --- Most keymaps live here, some might be defined in plugin configs such as
 --- some Lsp stuff, telescope(which is in the lsp config, not the telescope config), and
@@ -128,6 +129,22 @@ local KEYMAPS = {
 		end,
 		desc = "[F]ormat buffer",
 	},
+	{
+		type = "map",
+		scope = "global",
+		mode = "n",
+		lhs = "<leader>t",
+		rhs = terminal.toggle,
+		desc = "Toggle floating terminal",
+	},
+	{
+		type = "map",
+		scope = "global",
+		mode = "n",
+		lhs = "<leader>cc",
+		rhs = terminal.open_copilot,
+		desc = "Open floating GitHub [C]opilot [C]LI",
+	},
 
 	{
 		type = "map",
@@ -226,6 +243,7 @@ local KEYMAPS = {
 	{ type = "map", scope = "global", mode = { "n", "i", "v", "x", "s", "o", "c" }, lhs = "<Down>", rhs = "<Nop>" },
 	{ type = "map", scope = "global", mode = { "n", "i", "v", "x", "s", "o", "c" }, lhs = "<Left>", rhs = "<Nop>" },
 	{ type = "map", scope = "global", mode = { "n", "i", "v", "x", "s", "o", "c" }, lhs = "<Right>", rhs = "<Nop>" },
+	{ type = "map", scope = "global", mode = "t", lhs = "<Esc>", rhs = terminal.close, desc = "Close floating terminal" },
 }
 
 -- Disable macros (pressing 'q' typically starts/stops recording macros but I use it to quit things alot).
