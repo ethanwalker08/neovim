@@ -1,6 +1,18 @@
 local config = {}
 
 function config.setup()
+	local function set_float_highlights()
+		vim.api.nvim_set_hl(0, "FloatingTermNormal", { bg = "none" })
+		vim.api.nvim_set_hl(0, "FloatingTermBorder", { bg = "none" })
+	end
+
+	set_float_highlights()
+
+	vim.api.nvim_create_autocmd("ColorScheme", {
+		group = augroup,
+		callback = set_float_highlights,
+	})
+
 	vim.api.nvim_create_autocmd("TermClose", {
 		group = augroup,
 		callback = function()
@@ -68,8 +80,6 @@ function config.setup()
 
 		vim.wo[terminal_state.win].winblend = 0
 		vim.wo[terminal_state.win].winhighlight = "Normal:FloatingTermNormal,FloatBorder:FloatingTermBorder"
-		vim.api.nvim_set_hl(0, "FloatingTermNormal", { bg = "none" })
-		vim.api.nvim_set_hl(0, "FloatingTermBorder", { bg = "none" })
 
 		local has_terminal = false
 		local lines = vim.api.nvim_buf_get_lines(terminal_state.buf, 0, -1, false)

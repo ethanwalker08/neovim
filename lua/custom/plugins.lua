@@ -100,12 +100,22 @@ function p.setup()
 	require("custom.configs.copilot-setup").setup()
 
 	require("snacks").setup({
+		styles = {
+			float = {
+				backdrop = false,
+				border = "rounded",
+				wo = {
+					winblend = 0,
+					winhighlight = "NormalFloat:FloatingTermNormal,FloatBorder:FloatingTermBorder",
+				},
+			},
+		},
 		input = { enabled = true, win = { resize = true, border = "rounded" } },
 		terminal = { enabled = true },
 		lazygit = { enabled = true, configure = true, interactive = true },
 		rename = { enabled = true },
 		notifier = { enabled = true },
-		dim = { filter = false },
+		dim = { enabled = false },
 		indent = { enabled = true, animate = { enabled = false } },
 	})
 
