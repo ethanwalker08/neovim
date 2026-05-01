@@ -41,6 +41,7 @@ function p.setup()
 	require("custom.pack").setup(PLUGINS)
 
 	require("lazydev").setup()
+	require("custom.configs.onedarkpro").setup()
 
 	--- Mini.nvim plugins ---
 	require("mini.clue").setup({
