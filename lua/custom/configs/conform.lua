@@ -34,6 +34,9 @@ function config.setup()
 		"package.json",
 	}
 	local prettier_cwd = conform_util.root_file(prettier_root_files)
+	local has_prettier_root = function(_, ctx)
+		return prettier_cwd(nil, ctx) ~= nil
+	end
 	local formatters_by_ft = {
 		lua = { "stylua" },
 		python = { "ruff_format" },
@@ -55,16 +58,12 @@ function config.setup()
 			prettierd = {
 				cwd = prettier_cwd,
 				require_cwd = true,
-				condition = function(ctx)
-					return prettier_cwd(ctx) ~= nil
-				end,
+				condition = has_prettier_root,
 			},
 			prettier = {
 				cwd = prettier_cwd,
 				require_cwd = true,
-				condition = function(ctx)
-					return prettier_cwd(ctx) ~= nil
-				end,
+				condition = has_prettier_root,
 			},
 		},
 		formatters_by_ft = formatters_by_ft,
