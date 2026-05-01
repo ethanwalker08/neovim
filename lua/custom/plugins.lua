@@ -10,10 +10,16 @@ local PLUGINS = {
 	},
 	"https://github.com/nvim-lua/plenary.nvim",
 	"https://github.com/nvim-telescope/telescope.nvim",
+	"https://github.com/nvim-telescope/telescope-dap.nvim",
 	"https://www.github.com/neovim/nvim-lspconfig",
+	"https://github.com/mfussenegger/nvim-dap",
+	"https://github.com/nvim-neotest/nvim-nio",
+	"https://github.com/rcarriga/nvim-dap-ui",
+	"https://github.com/theHamsta/nvim-dap-virtual-text",
 	"https://github.com/mason-org/mason.nvim",
 	"https://github.com/mason-org/mason-lspconfig.nvim",
 	"https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim",
+	"https://github.com/jay-babu/mason-nvim-dap.nvim",
 	{
 		src = "https://github.com/saghen/blink.cmp",
 		version = vim.version.range("1.*"),
@@ -35,6 +41,7 @@ local PLUGINS = {
 	"https://www.github.com/lewis6991/gitsigns.nvim",
 	"https://github.com/zbirenbaum/copilot.lua",
 	"https://github.com/stevearc/conform.nvim",
+	"https://github.com/mxsdev/nvim-dap-vscode-js",
 }
 
 function p.setup()
@@ -56,6 +63,7 @@ function p.setup()
 		-- Add descriptions for mapping groups
 		clues = {
 			{ mode = "n", keys = "<Leader>b", desc = "+Buffers" },
+			{ mode = "n", keys = "<Leader>d", desc = "+Debug" },
 			{ mode = "n", keys = "<Leader>l", desc = "+LSP" },
 			{ mode = "n", keys = "<Leader>s", desc = "+Search" },
 			{ mode = "n", keys = "<Leader>x", desc = "+Diagnostics" },
