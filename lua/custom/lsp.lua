@@ -79,7 +79,15 @@ function M.setup()
 
 	require("mason").setup({
 		ui = {
+			backdrop = 100,
 			border = "rounded",
+			height = 0.85,
+			width = 0.8,
+			icons = {
+				package_installed = "✓",
+				package_pending = "➜",
+				package_uninstalled = "✗",
+			},
 		},
 	})
 	require("mason-tool-installer").setup({

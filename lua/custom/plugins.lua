@@ -119,6 +119,10 @@ function p.setup()
 				},
 			},
 		},
+		picker = {
+			enabled = true,
+			ui_select = true,
+		},
 		terminal = { enabled = true },
 		lazygit = { enabled = true, configure = true, interactive = true },
 		rename = { enabled = true },
