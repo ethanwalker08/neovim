@@ -190,7 +190,7 @@ function M.setup()
 			["<Left>"] = { "snippet_backward", "fallback" },
 			["<Esc>"] = { "cancel", "fallback" },
 		},
-		appearance = { nerd_font_variant = "normal" },
+		appearance = { nerd_font_variant = "mono" },
 		completion = {
 			trigger = {
 				prefetch_on_insert = true,
@@ -239,9 +239,12 @@ function M.setup()
 	})
 
 	for server_name, server_opts in pairs(servers) do
-		vim.lsp.config(server_name, vim.tbl_deep_extend("force", {
-			capabilities = capabilities,
-		}, server_opts))
+		vim.lsp.config(
+			server_name,
+			vim.tbl_deep_extend("force", {
+				capabilities = capabilities,
+			}, server_opts)
+		)
 	end
 end
 

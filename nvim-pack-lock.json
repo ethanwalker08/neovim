@@ -4,9 +4,9 @@
       "rev": "a62e1083a3cfe8b6b206e7d3d33a51091df25357",
       "src": "https://github.com/L3MON4D3/LuaSnip"
     },
-    "avante.nvim": {
-      "rev": "8c84af0f09e5d9058362ac58401a8e7b047d826e",
-      "src": "https://github.com/yetone/avante.nvim"
+    "barbar.nvim": {
+      "rev": "a4bef5b4fc1f064f2f673172252028eae18191c9",
+      "src": "https://github.com/romgrk/barbar.nvim"
     },
     "blamer.nvim": {
       "rev": "e0d43c11697300eb68f00d69df8b87deb0bf52dc",
@@ -17,11 +17,6 @@
       "src": "https://github.com/saghen/blink.cmp",
       "version": "1.0.0 - 2.0.0"
     },
-    "codecompanion.nvim": {
-      "rev": "83f5c9c99d9c0687cc94197976d81ce619727986",
-      "src": "https://www.github.com/olimorris/codecompanion.nvim",
-      "version": "19.0.0 - 20.0.0"
-    },
     "conform.nvim": {
       "rev": "dca1a190aa85f9065979ef35802fb77131911106",
       "src": "https://github.com/stevearc/conform.nvim"
@@ -30,37 +25,17 @@
       "rev": "ad7e729e9a6348f7da482be0271d452dbc4c8e2c",
       "src": "https://github.com/zbirenbaum/copilot.lua"
     },
-    "efmls-configs-nvim": {
-      "rev": "0b0ca5462a0a9c1233cc8359e64741d7d49fbbe4",
-      "src": "https://github.com/creativenull/efmls-configs-nvim"
-    },
     "friendly-snippets": {
       "rev": "6cd7280adead7f586db6fccbd15d2cac7e2188b9",
       "src": "https://github.com/rafamadriz/friendly-snippets"
-    },
-    "fzf-lua": {
-      "rev": "4deeecf611c0beba6455e6cf06e2c051a6169dd4",
-      "src": "https://www.github.com/ibhagwan/fzf-lua"
-    },
-    "git-blame.nvim": {
-      "rev": "5c536e2d4134d064aa3f41575280bc8a2a0e03d7",
-      "src": "https://github.com/f-person/git-blame.nvim"
     },
     "gitsigns.nvim": {
       "rev": "8d82c240f190fc33723d48c308ccc1ed8baad69d",
       "src": "https://www.github.com/lewis6991/gitsigns.nvim"
     },
-    "indent-blankline.nvim": {
-      "rev": "d28a3f70721c79e3c5f6693057ae929f3d9c0a03",
-      "src": "https://github.com/lukas-reineke/indent-blankline.nvim"
-    },
     "lazydev.nvim": {
       "rev": "ff2cbcba459b637ec3fd165a2be59b7bbaeedf0d",
       "src": "https://github.com/folke/lazydev.nvim"
-    },
-    "lazygit.nvim": {
-      "rev": "a04ad0dbc725134edbee3a5eea29290976695357",
-      "src": "https://github.com/kdheepak/lazygit.nvim"
     },
     "lualine.nvim": {
       "rev": "a905eeebc4e63fdc48b5135d3bf8aea5618fb21c",
@@ -81,10 +56,6 @@
     "mini.nvim": {
       "rev": "2431902e78b76f435542d1e606f08475360068ca",
       "src": "https://www.github.com/echasnovski/mini.nvim"
-    },
-    "noice.nvim": {
-      "rev": "7bfd942445fb63089b59f97ca487d605e715f155",
-      "src": "https://github.com/folke/noice.nvim"
     },
     "nui.nvim": {
       "rev": "de740991c12411b663994b2860f1a4fd0937c130",
