@@ -48,3 +48,4 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 
 require("custom.terminal").setup()
 require("custom.lsp").setup()
+require("custom.debugger").setup()

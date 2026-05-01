@@ -145,6 +145,206 @@ local KEYMAPS = {
 		rhs = terminal.open_copilot,
 		desc = "Open floating GitHub [C]opilot [C]LI",
 	},
+	{
+		type = "map",
+		scope = "global",
+		mode = "n",
+		lhs = "<leader>ds",
+		rhs = function()
+			require("custom.debugger").start_session()
+		end,
+		desc = "Debug: Launch config [S]elector",
+	},
+	{
+		type = "map",
+		scope = "global",
+		mode = "n",
+		lhs = "<leader>da",
+		rhs = function()
+			require("custom.debugger").pick_all_configurations()
+		end,
+		desc = "Debug: Show [A]ll configurations",
+	},
+	{
+		type = "map",
+		scope = "global",
+		mode = "n",
+		lhs = "<leader>dc",
+		rhs = function()
+			require("custom.debugger").continue_session()
+		end,
+		desc = "Debug: [C]ontinue",
+	},
+	{
+		type = "map",
+		scope = "global",
+		mode = "n",
+		lhs = "<leader>dr",
+		rhs = function()
+			require("custom.debugger").restart_last()
+		end,
+		desc = "Debug: [R]estart last session",
+	},
+	{
+		type = "map",
+		scope = "global",
+		mode = "n",
+		lhs = "<leader>dt",
+		rhs = function()
+			require("custom.debugger").terminate()
+		end,
+		desc = "Debug: [T]erminate session",
+	},
+	{
+		type = "map",
+		scope = "global",
+		mode = "n",
+		lhs = "<leader>dp",
+		rhs = function()
+			require("custom.debugger").pause()
+		end,
+		desc = "Debug: [P]ause session",
+	},
+	{
+		type = "map",
+		scope = "global",
+		mode = "n",
+		lhs = "<leader>do",
+		rhs = function()
+			require("custom.debugger").step_over()
+		end,
+		desc = "Debug: Step [O]ver",
+	},
+	{
+		type = "map",
+		scope = "global",
+		mode = "n",
+		lhs = "<leader>di",
+		rhs = function()
+			require("custom.debugger").step_into()
+		end,
+		desc = "Debug: Step [I]nto",
+	},
+	{
+		type = "map",
+		scope = "global",
+		mode = "n",
+		lhs = "<leader>du",
+		rhs = function()
+			require("custom.debugger").step_out()
+		end,
+		desc = "Debug: Step o[U]t",
+	},
+	{
+		type = "map",
+		scope = "global",
+		mode = "n",
+		lhs = "<leader>dd",
+		rhs = function()
+			require("custom.debugger").toggle_ui()
+		end,
+		desc = "Debug: Toggle [D]ebug UI",
+	},
+	{
+		type = "map",
+		scope = "global",
+		mode = "n",
+		lhs = "<leader>db",
+		rhs = function()
+			require("custom.debugger").toggle_breakpoint()
+		end,
+		desc = "Debug: Toggle [B]reakpoint",
+	},
+	{
+		type = "map",
+		scope = "global",
+		mode = "n",
+		lhs = "<leader>dB",
+		rhs = function()
+			require("custom.debugger").set_conditional_breakpoint()
+		end,
+		desc = "Debug: Conditional [B]reakpoint",
+	},
+	{
+		type = "map",
+		scope = "global",
+		mode = "n",
+		lhs = "<leader>dL",
+		rhs = function()
+			require("custom.debugger").set_log_point()
+		end,
+		desc = "Debug: [L]og point",
+	},
+	{
+		type = "map",
+		scope = "global",
+		mode = "n",
+		lhs = "<leader>dx",
+		rhs = function()
+			require("custom.debugger").clear_breakpoints()
+		end,
+		desc = "Debug: Clear breakpoints",
+	},
+	{
+		type = "map",
+		scope = "global",
+		mode = "n",
+		lhs = "<leader>dC",
+		rhs = function()
+			require("custom.debugger").pick_configuration()
+		end,
+		desc = "Debug: Pick [C]onfiguration",
+	},
+	{
+		type = "map",
+		scope = "global",
+		mode = "n",
+		lhs = "<leader>dR",
+		rhs = function()
+			require("custom.debugger").toggle_repl()
+		end,
+		desc = "Debug: Toggle [R]EPL",
+	},
+	{
+		type = "map",
+		scope = "global",
+		mode = "n",
+		lhs = "<leader>df",
+		rhs = function()
+			require("custom.debugger").show_frames()
+		end,
+		desc = "Debug: Show [F]rames",
+	},
+	{
+		type = "map",
+		scope = "global",
+		mode = "n",
+		lhs = "<leader>dv",
+		rhs = function()
+			require("custom.debugger").show_scopes()
+		end,
+		desc = "Debug: Show [V]ariables",
+	},
+	{
+		type = "map",
+		scope = "global",
+		mode = "n",
+		lhs = "<leader>dw",
+		rhs = function()
+			require("custom.debugger").show_watches()
+		end,
+		desc = "Debug: Show [W]atches",
+	},
+	{
+		type = "map",
+		scope = "global",
+		mode = { "n", "v" },
+		lhs = "<leader>de",
+		rhs = function()
+			require("custom.debugger").eval()
+		end,
+		desc = "Debug: [E]valuate expression",
+	},
 
 	{
 		type = "map",
@@ -243,7 +443,14 @@ local KEYMAPS = {
 	{ type = "map", scope = "global", mode = { "n", "i", "v", "x", "s", "o", "c" }, lhs = "<Down>", rhs = "<Nop>" },
 	{ type = "map", scope = "global", mode = { "n", "i", "v", "x", "s", "o", "c" }, lhs = "<Left>", rhs = "<Nop>" },
 	{ type = "map", scope = "global", mode = { "n", "i", "v", "x", "s", "o", "c" }, lhs = "<Right>", rhs = "<Nop>" },
-	{ type = "map", scope = "global", mode = "t", lhs = "<Esc>", rhs = terminal.close, desc = "Close floating terminal" },
+	{
+		type = "map",
+		scope = "global",
+		mode = "t",
+		lhs = "<Esc>",
+		rhs = terminal.close,
+		desc = "Close floating terminal",
+	},
 }
 
 -- Disable macros (pressing 'q' typically starts/stops recording macros but I use it to quit things alot).
