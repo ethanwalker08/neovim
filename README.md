@@ -18,25 +18,20 @@ Just type `nvim` in your terminal - everything works automatically!
 
 ## 🔧 Configuration
 
-- If you want to change anything in this config for your own setup, delete the `.git` folder from this configuration on your machine and init your own git repo for your config!
-- Plugins can be deleted by just removing the file for a plugin from the /lua/custom/plugins directory.
-- You can add a plugin by making a new file in that same directory and using lua, return the new plugin based on the lazy.nvim plugin specs.
-    - Adding a plugin looks like this:
-    ```lua
-    return {
-        "githubOwner/githubRepoName",
-        lazy = INSERT_LAZY_LOADING_CHOICE_HERE
-        opts = {} -- some plugins have some options you can put here
-        config = function()
-        -- Generally you can customize more configurations with lazy.nvim loaded plugins by add a custom config function for a plugin here, refer to the plugins docs for available options for the config
-        end
-    ```
+- If you want to change anything in this config for your own setup, delete the `.git` folder from this configuration on your machine and init your own git repo for your config.
+- Plugin declarations live in `lua/custom/plugins.lua` and use Neovim 0.12's native `vim.pack` package manager.
+- Add a plugin by appending its Git URL (or a spec table with `src`, `version`, `branch`, or `build`) to the `PLUGINS` table in `lua/custom/plugins.lua`.
+- Remove a plugin by deleting its entry from that same `PLUGINS` table.
+- `nvim-pack-lock.json` is the native lockfile for `vim.pack` and should stay checked in.
+- Stale plugins are pruned automatically on startup. You can also run:
+  - `:PackClean` to delete plugins that are no longer declared.
+  - `:PackSync` to delete stale plugins and force-update all managed plugins.
 
 ## 🚀 Plugins
 
 ### Active Neovim Plugins that I use
 
-- lazy.nvim - Plugin manager
+- vim.pack - Native Neovim plugin manager
 - telescope.nvim - Fuzzy finder (PEAK NEOVIM)
 - nvim-tree.lua - File explorer
 - LSPConfig + Mason - Automatic language spec downloading 
