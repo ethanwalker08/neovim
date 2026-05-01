@@ -25,6 +25,7 @@ function config.setup()
 		pattern = "BlinkCmpMenuOpen",
 		callback = function()
 			vim.b.copilot_suggestion_hidden = true
+			require("copilot.suggestion").toggle_auto_trigger()
 		end,
 	})
 
@@ -32,15 +33,16 @@ function config.setup()
 		pattern = "BlinkCmpMenuClose",
 		callback = function()
 			vim.b.copilot_suggestion_hidden = false
+			require("copilot.suggestion").toggle_auto_trigger()
 		end,
 	})
 
-	-- vim.api.nvim_create_autocmd("ColorScheme", {
-	-- 	callback = function()
-	-- 		vim.api.nvim_set_hl(0, "CopilotSuggestion", { fg = "#83a598", italic = true })
-	-- 		vim.api.nvim_set_hl(0, "CopilotAnnotation", { fg = "#83a598" })
-	-- 	end,
-	-- })
+	vim.api.nvim_create_autocmd("ColorScheme", {
+		callback = function()
+			vim.api.nvim_set_hl(0, "CopilotSuggestion", { fg = "#83a598", italic = true })
+			vim.api.nvim_set_hl(0, "CopilotAnnotation", { fg = "#83a598" })
+		end,
+	})
 end
 
 return config

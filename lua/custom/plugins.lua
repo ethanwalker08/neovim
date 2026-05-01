@@ -92,17 +92,11 @@ function p.setup()
 			hex_color = hipatterns.gen_highlighter.hex_color(),
 		},
 	})
-
-	require("mini.cursorword").setup({})
-	require("mini.git").setup({})
-	require("mini.tabline").setup({})
-	require("mini.fuzzy").setup({})
-	require("mini.ai").setup({})
 	require("mini.comment").setup({})
-	require("mini.move").setup({})
-	require("mini.surround").setup({})
-	require("mini.pairs").setup({})
+	require("mini.cursorword").setup({})
 	require("mini.bufremove").setup({})
+
+	require("mini.pairs").setup({})
 
 	--- Plugin Configs ---
 	--- More in depth plugins have dedicated files, simpler ones are included in this file
@@ -112,9 +106,14 @@ function p.setup()
 
 	require("custom.configs.file-tree").setup()
 
+	require("custom.configs.barbar").setup()
+	require("custom.configs.gitsigns").setup()
+
 	require("custom.configs.statusline").setup()
 
 	require("custom.configs.copilot-setup").setup()
+
+	require("custom.configs.conform").setup()
 
 	require("snacks").setup({
 		styles = {
@@ -131,7 +130,7 @@ function p.setup()
 		terminal = { enabled = true },
 		lazygit = { enabled = true, configure = true, interactive = true },
 		rename = { enabled = true },
-		notifier = { enabled = true },
+		notifier = { enabled = true, style = "fancy" },
 		dim = { enabled = false },
 		indent = { enabled = true, animate = { enabled = false } },
 	})

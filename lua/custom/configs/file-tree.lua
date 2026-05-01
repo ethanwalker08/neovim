@@ -4,6 +4,29 @@ function config.setup()
 		filters = {
 			git_ignored = false,
 		},
+		git = {
+			enable = true,
+			ignore = false,
+		},
+		renderer = {
+			icons = {
+				glyphs = {
+					git = {
+						untracked = "",
+						unstaged = "~",
+						staged = "✓",
+						unmerged = "",
+						renamed = "R",
+						deleted = "",
+						ignored = "◌",
+					},
+				},
+				show = {
+					git = true,
+					modified = true,
+				},
+			},
+		},
 
 		-- Buffer-local mappings and small niceties for nvim-tree
 		on_attach = function(bufnr)
