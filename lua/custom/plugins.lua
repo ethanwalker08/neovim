@@ -22,12 +22,14 @@ local PLUGINS = {
 	"https://github.com/rafamadriz/friendly-snippets",
 
 	"https://github.com/MunifTanjim/nui.nvim",
+	"https://github.com/rcarriga/nvim-notify",
 	"https://github.com/folke/lazydev.nvim",
 	"https://github.com/olimorris/onedarkpro.nvim",
 	"https://github.com/APZelos/blamer.nvim",
 	"https://github.com/nvim-tree/nvim-web-devicons",
 	"https://github.com/L3MON4D3/LuaSnip",
 	"https://github.com/folke/snacks.nvim",
+	"https://github.com/folke/noice.nvim",
 	"https://github.com/romgrk/barbar.nvim",
 	"https://github.com/nvim-lualine/lualine.nvim",
 	"https://www.github.com/lewis6991/gitsigns.nvim",
@@ -104,6 +106,8 @@ function p.setup()
 
 	require("custom.configs.conform").setup()
 
+	require("custom.configs.noice").setup()
+
 	require("snacks").setup({
 		styles = {
 			float = {
@@ -115,11 +119,9 @@ function p.setup()
 				},
 			},
 		},
-		input = { enabled = true, win = { resize = true, border = "rounded" } },
 		terminal = { enabled = true },
 		lazygit = { enabled = true, configure = true, interactive = true },
 		rename = { enabled = true },
-		notifier = { enabled = true, style = "fancy" },
 		dim = { enabled = false },
 		indent = { enabled = true, animate = { enabled = false } },
 	})
