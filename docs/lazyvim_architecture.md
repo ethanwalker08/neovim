@@ -109,6 +109,10 @@ Representative upstream defaults:
 - Floating terminal workflows on `<leader>ft`, `<leader>fT`, and `<C-/>`
 - Toggle family under `<leader>u*` backed by `snacks.nvim`
 
+Current migration note: `lua/config/keymaps.lua` intentionally takes user ownership of bare `<leader>w` for immediate buffer writes with `nowait = true`. This preserves the old save habit and means LazyVim's window-prefix discoverability under `<leader>w` should not be relied on unless that workflow is explicitly remapped later.
+
+Current migration note: `lua/config/keymaps.lua` also clears LazyVim's `<leader>f*` file/find namespace so bare `<leader>f` can run `LazyVim.format({ force = true })` immediately. The Snacks explorer is remapped directly to `<leader>e` because LazyVim's default `<leader>e` normally points through `<leader>fe`.
+
 Customization guidance:
 
 - Use `vim.keymap.del` to remove a LazyVim global default before redefining it.

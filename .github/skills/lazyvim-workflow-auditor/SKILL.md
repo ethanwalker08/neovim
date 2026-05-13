@@ -1,7 +1,7 @@
 ---
 name: lazyvim-workflow-auditor
-description: 'Audit one workflow slice or a related slice set by comparing nvim.bak with the current LazyVim config. Use for finding behavior mismatches, muscle-memory risks, and missing aliases or adaptations.'
-argument-hint: 'Describe the workflow slice, related slice set, behavior, or file area to audit.'
+description: 'Audit one workflow aspect changed by comparing nvim.bak with the current LazyVim config. Use for finding behavior mismatches, muscle-memory risks, and missing aliases or adaptations.'
+argument-hint: 'Describe the workflow aspect, behavior, or file area to audit.'
 user-invocable: true
 ---
 

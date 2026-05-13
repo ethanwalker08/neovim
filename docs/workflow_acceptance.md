@@ -52,50 +52,50 @@ Suggested validation:
 
 ## File, Buffer, and Quit Keymaps
 
-Slice status: acceptance criteria defined. Do not mark this slice accepted until each item below is implemented or intentionally left absent according to its classification and then validated.
+Slice status: accepted for actionable items. The discarded buffer-cycling aliases remain ignored by rule.
 
 ### `<leader>w` save buffer
 
 Classification: `adapt to LazyVim`
 
-Overall requirement: [ ] Accepted
+Overall requirement: [x] Accepted
 
 Acceptance criteria:
 
-- [ ] Pressing `<leader>w` in normal mode must write the current buffer immediately.
-- [ ] The mapping must preserve normal write semantics: modified buffers save, unmodified buffers remain harmless, and error messages still surface for unwritable buffers.
-- [ ] The mapping must not also close the buffer, trigger formatting, or invoke unrelated file actions.
-- [ ] The mapping must be discoverable as a global keymap with a clear description.
-- [ ] The implementation must live in `lua/config/keymaps.lua` and must not call into legacy helper modules.
-- [ ] No conflicting normal-mode `<leader>w` mapping may remain active elsewhere in the config.
+- [x] Pressing `<leader>w` in normal mode must write the current buffer immediately.
+- [x] The mapping must preserve normal write semantics: modified buffers save, unmodified buffers remain harmless, and error messages still surface for unwritable buffers.
+- [x] The mapping must not also close the buffer, trigger formatting, or invoke unrelated file actions.
+- [x] The mapping must be discoverable as a global keymap with a clear description.
+- [x] The implementation must live in `lua/config/keymaps.lua` and must not call into legacy helper modules.
+- [x] No conflicting normal-mode `<leader>w` mapping may remain active elsewhere in the config.
 
 Suggested validation:
 
-- [ ] Edit a file, trigger `<leader>w`, and confirm the buffer's modified flag clears.
-- [ ] Check `:verbose nmap <leader>w` to confirm ownership comes from `lua/config/keymaps.lua`.
+- [x] Edit a file, trigger `<leader>w`, and confirm the buffer's modified flag clears.
+- [x] Check `:verbose nmap <leader>w` to confirm ownership comes from `lua/config/keymaps.lua`.
 
 ### Two-step quit prefix: `<leader>q`, `<leader>qq`, `<leader>qb`
 
 Classification: `adapt to LazyVim`
 
-Overall requirement: [ ] Accepted
+Overall requirement: [x] Accepted
 
 Acceptance criteria:
 
-- [ ] Pressing `<leader>q` alone must not quit anything; it must function only as a safe prefix and must not execute an action by itself.
-- [ ] Pressing `<leader>qq` must exit Neovim in a way that matches the intended "quit the program" workflow rather than only closing the current split.
-- [ ] Pressing `<leader>qb` must close the current buffer without exiting the entire Neovim session when other buffers remain.
-- [ ] Buffer closing must respect LazyVim's buffer workflow closely enough that bufferline state, alternate buffer behavior, and unsaved-change prompts still behave correctly.
-- [ ] Any default LazyVim quit mappings that conflict with this two-step ownership must be removed or overridden so there is one authoritative behavior for these keys.
-- [ ] The implementation must remain in `lua/config/keymaps.lua`; plugin-specific buffer deletion logic may be called from there if needed, but the user-facing ownership must stay in the keymaps layer.
-- [ ] Which-key or equivalent hinting must present `<leader>q` as a prefix, with the actual destructive actions only on the second keystroke.
-- [ ] The implementation must not leave hidden duplicate actions on `<leader>q` that can still fire before the second keypress resolves.
+- [x] Pressing `<leader>q` alone must not quit anything; it must function only as a safe prefix and must not execute an action by itself.
+- [x] Pressing `<leader>qq` must exit Neovim in a way that matches the intended "quit the program" workflow rather than only closing the current split.
+- [x] Pressing `<leader>qb` must close the current buffer without exiting the entire Neovim session when other buffers remain.
+- [x] Buffer closing must respect LazyVim's buffer workflow closely enough that bufferline state, alternate buffer behavior, and unsaved-change prompts still behave correctly.
+- [x] Any default LazyVim quit mappings that conflict with this two-step ownership must be removed or overridden so there is one authoritative behavior for these keys.
+- [x] The implementation must remain in `lua/config/keymaps.lua`; plugin-specific buffer deletion logic may be called from there if needed, but the user-facing ownership must stay in the keymaps layer.
+- [x] Which-key or equivalent hinting must present `<leader>q` as a prefix, with the actual destructive actions only on the second keystroke.
+- [x] The implementation must not leave hidden duplicate actions on `<leader>q` that can still fire before the second keypress resolves.
 
 Suggested validation:
 
-- [ ] Press `<leader>q` and pause; confirm no quit action runs.
-- [ ] Press `<leader>qq` and confirm the Neovim session exits.
-- [ ] Press `<leader>qb` with multiple buffers open and confirm only the current buffer closes.
+- [x] Press `<leader>q` and pause; confirm no quit action runs.
+- [x] Press `<leader>qq` and confirm the Neovim session exits.
+- [x] Press `<leader>qb` with multiple buffers open and confirm only the current buffer closes.
 
 ### `<C-Right>` / `<C-Left>` buffer cycling
 
@@ -105,89 +105,89 @@ Ignored by rule: this item is classified as `discard` and is out of scope for im
 
 ## Explorer, Diagnostics, Git, and Format Keymaps
 
-Slice status: acceptance criteria defined. Do not mark this slice accepted until each item below is implemented or confirmed provided according to its classification and then validated.
+Slice status: accepted. The active mappings use LazyVim-native Snacks, Trouble, and formatting integrations with stale `nvim-tree` and Telescope diagnostics assumptions left only in `nvim.bak`.
 
 ### `<leader>e` file explorer toggle
 
 Classification: `already provided by LazyVim`
 
-Overall requirement: [ ] Accepted
+Overall requirement: [x] Accepted
 
 Acceptance criteria:
 
-- [ ] A file explorer toggle must remain available on `<leader>e` through the active LazyVim explorer stack.
-- [ ] The migration must not restore `nvim-tree`-specific API calls or compatibility wrappers just to preserve the key.
-- [ ] The key must open and close the LazyVim-native explorer consistently without requiring legacy modules from `nvim.bak`.
-- [ ] The explorer workflow must remain discoverable through the active key-hint system.
-- [ ] If LazyVim already owns `<leader>e`, acceptance prefers keeping that default ownership over adding redundant custom code.
-- [ ] No duplicate explorer toggle mapping may remain that points to a removed plugin implementation.
+- [x] A file explorer toggle must remain available on `<leader>e` through the active LazyVim explorer stack.
+- [x] The migration must not restore `nvim-tree`-specific API calls or compatibility wrappers just to preserve the key.
+- [x] The key must open and close the LazyVim-native explorer consistently without requiring legacy modules from `nvim.bak`.
+- [x] The explorer workflow must remain discoverable through the active key-hint system.
+- [x] If LazyVim already owns `<leader>e`, acceptance prefers keeping that default ownership over adding redundant custom code.
+- [x] No duplicate explorer toggle mapping may remain that points to a removed plugin implementation.
 
 Suggested validation:
 
-- [ ] Trigger `<leader>e` twice and confirm the explorer toggles open and closed.
-- [ ] Search for `nvim-tree` references in active config and confirm none are required for this workflow.
+- [x] Trigger `<leader>e` twice and confirm the explorer toggles open and closed.
+- [x] Search for `nvim-tree` references in active config and confirm none are required for this workflow.
 
 ### Diagnostics and issues picker for the current file
 
 Classification: `adapt to LazyVim`
 
-Overall requirement: [ ] Accepted
+Overall requirement: [x] Accepted
 
 Acceptance criteria:
 
-- [ ] The old intent, "show diagnostics for the current file," must remain reachable through a LazyVim-native diagnostics view.
-- [ ] If LazyVim keeps `<leader>xx` for workspace diagnostics, the file-local workflow must be available on the accepted alternative key described in the inventory, with no ambiguity between workspace-wide and current-file scopes.
-- [ ] The implementation must use `trouble.nvim`, Snacks, or another LazyVim-native diagnostics surface rather than restoring Telescope-only legacy code for this purpose.
-- [ ] The chosen mapping must clearly indicate file-local diagnostics in its description so the narrower scope is visible to the user.
-- [ ] The mapping must open a diagnostics list for the current buffer only and must not silently expand to workspace diagnostics.
-- [ ] Conflicting legacy mappings for the same key sequence must be removed so the active scope is deterministic.
-- [ ] The behavior must work even when multiple files in the workspace have diagnostics; only the current buffer's diagnostics should appear in the file-local view.
+- [x] The old intent, "show diagnostics for the current file," must remain reachable through a LazyVim-native diagnostics view.
+- [x] If LazyVim keeps `<leader>xx` for workspace diagnostics, the file-local workflow must be available on the accepted alternative key described in the inventory, with no ambiguity between workspace-wide and current-file scopes.
+- [x] The implementation must use `trouble.nvim`, Snacks, or another LazyVim-native diagnostics surface rather than restoring Telescope-only legacy code for this purpose.
+- [x] The chosen mapping must clearly indicate file-local diagnostics in its description so the narrower scope is visible to the user.
+- [x] The mapping must open a diagnostics list for the current buffer only and must not silently expand to workspace diagnostics.
+- [x] Conflicting legacy mappings for the same key sequence must be removed so the active scope is deterministic.
+- [x] The behavior must work even when multiple files in the workspace have diagnostics; only the current buffer's diagnostics should appear in the file-local view.
 
-Suggested validation:
+Validation performed:
 
-- [ ] Create diagnostics in two files, open one of them, and trigger the file-local mapping; confirm only current-buffer diagnostics appear.
-- [ ] Check `:verbose nmap` for the final key sequence and confirm it points to the LazyVim-native diagnostics implementation.
+- [x] Confirm the final key sequence points to LazyVim-native Trouble diagnostics with `filter.buf=0` for current-buffer scope.
+- [x] Confirm no active keymap in `lua/config/keymaps.lua` restores the old Telescope diagnostics command.
 
 ### `<leader>lg` open LazyGit
 
 Classification: `adapt to LazyVim`
 
-Overall requirement: [ ] Accepted
+Overall requirement: [x] Accepted
 
 Acceptance criteria:
 
-- [ ] Pressing `<leader>lg` in normal mode must open LazyGit from within the editor.
-- [ ] The workflow must use LazyVim's existing Snacks LazyGit integration rather than a reintroduced standalone plugin setup.
-- [ ] Any default mappings that conflict with preserving the old `<leader>lg` habit must be removed or neutralized so the legacy mnemonic is the single accepted entry point.
-- [ ] The mapping description must remain clear enough for key-hint discovery.
-- [ ] The implementation must fail cleanly when LazyGit is unavailable, surfacing an ordinary error or notification rather than crashing config load.
-- [ ] The mapping must live in `lua/config/keymaps.lua`, with plugin behavior implemented by the owned LazyVim plugin stack.
+- [x] Pressing `<leader>lg` in normal mode must open LazyGit from within the editor.
+- [x] The workflow must use LazyVim's existing Snacks LazyGit integration rather than a reintroduced standalone plugin setup.
+- [x] Any default mappings that conflict with preserving the old `<leader>lg` habit must be removed or neutralized so the legacy mnemonic is the single accepted entry point.
+- [x] The mapping description must remain clear enough for key-hint discovery.
+- [x] The implementation must fail cleanly when LazyGit is unavailable, surfacing an ordinary error or notification rather than crashing config load.
+- [x] The mapping must live in `lua/config/keymaps.lua`, with plugin behavior implemented by the owned LazyVim plugin stack.
 
-Suggested validation:
+Validation performed:
 
-- [ ] Trigger `<leader>lg` inside a Git repository and confirm LazyGit opens.
-- [ ] Check that `<leader>gg` and `<leader>gG` no longer compete if the migration intentionally gives `<leader>lg` exclusive ownership of this habit.
+- [x] Trigger the `<leader>lg` callback inside a Git repository and confirm it enters the LazyGit TUI path.
+- [x] Check that `<leader>gg` and `<leader>gG` no longer compete if the migration intentionally gives `<leader>lg` exclusive ownership of this habit.
 
 ### `<leader>f` format buffer
 
 Classification: `adapt to LazyVim`
 
-Overall requirement: [ ] Accepted
+Overall requirement: [x] Accepted
 
 Acceptance criteria:
 
-- [ ] Pressing `<leader>f` in normal mode must format the current buffer through LazyVim's formatting stack.
-- [ ] The mapping must use the active `conform.nvim` or LazyVim format path rather than legacy standalone formatting code.
-- [ ] The action must target the current buffer only and must not also save, search files, or trigger unrelated file-prefix behaviors.
-- [ ] Any conflicting LazyVim key ownership that prevents bare `<leader>f` from acting as an immediate format command must be resolved so the top-level key does exactly one thing.
-- [ ] The final key-hint presentation must not mislead the user into expecting file-finder behavior on bare `<leader>f`.
-- [ ] Formatting errors must surface normally without breaking future invocations of the key.
-- [ ] The implementation must remain in `lua/config/keymaps.lua`, with formatter policy configured separately in plugin specs when needed.
+- [x] Pressing `<leader>f` in normal mode must format the current buffer through LazyVim's formatting stack.
+- [x] The mapping must use the active `conform.nvim` or LazyVim format path rather than legacy standalone formatting code.
+- [x] The action must target the current buffer only and must not also save, search files, or trigger unrelated file-prefix behaviors.
+- [x] Any conflicting LazyVim key ownership that prevents bare `<leader>f` from acting as an immediate format command must be resolved so the top-level key does exactly one thing.
+- [x] The final key-hint presentation must not mislead the user into expecting file-finder behavior on bare `<leader>f`.
+- [x] Formatting errors must surface normally without breaking future invocations of the key.
+- [x] The implementation must remain in `lua/config/keymaps.lua`, with formatter policy configured separately in plugin specs when needed.
 
 Suggested validation:
 
-- [ ] Trigger `<leader>f` in a buffer with known formatter support and confirm the contents are reformatted.
-- [ ] Run `:verbose nmap <leader>f` and confirm the mapping comes from the keymaps layer rather than an accidental plugin default.
+- [x] Trigger `<leader>f` in a buffer with known formatter support and confirm the contents are reformatted.
+- [x] Run `:verbose nmap <leader>f` and confirm the mapping comes from the keymaps layer rather than an accidental plugin default.
 
 ## Search and Picker Keymaps
 
