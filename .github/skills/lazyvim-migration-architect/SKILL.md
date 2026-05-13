@@ -1,14 +1,14 @@
 ---
 name: lazyvim-migration-architect
-description: 'Plan a single LazyVim migration slice. Use for architecture review, classifying old nvim.bak workflows, identifying the owning implementation surface, and deciding whether LazyVim already covers the behavior.'
-argument-hint: 'Describe the single workflow slice, old behavior, and target files or docs.'
+description: 'Plan one LazyVim migration slice or a related slice set. Use for architecture review, classifying old nvim.bak workflows, identifying the owning implementation surface, and deciding whether LazyVim already covers the behavior.'
+argument-hint: 'Describe the workflow slice or related slice set, old behavior, and target files or docs.'
 user-invocable: true
 ---
 
 # LazyVim Migration Architecture
 
 ## When to Use
-- Planning a migration slice before any edits.
+- Planning out how to do part of the migration to match the expected workflow accceptance criteria found in `docs/workflow_acceptance.md`.
 - Deciding whether a workflow should be kept exactly, adapted, discarded, or left to LazyVim defaults.
 - Figuring out where the behavior belongs in `lua/config` or `lua/plugins`.
 
