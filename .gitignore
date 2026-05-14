@@ -7,3 +7,4 @@ foo.*
 *.log
 data
 docs/migration_log.md
+.DS_Store
