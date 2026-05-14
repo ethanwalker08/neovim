@@ -24,11 +24,20 @@ This document is the local reference for how LazyVim is structured, what it prov
 
 This repository is close to the LazyVim starter shape, but it is not a pristine starter anymore.
 
-- `lazyvim.json` currently enables no extras.
+- `lazyvim.json` currently enables `ai.copilot`, `coding.luasnip`, `editor.telescope`, `formatting.prettier`, `lang.json`, `lang.markdown`, `lang.toml`, `linting.eslint`, `util.dot`, and `vscode` extras.
 - `lua/plugins/colorscheme.lua` adds `olimorris/onedarkpro.nvim` and overrides LazyVim's colorscheme choice.
+- `lua/plugins/completion.lua` overrides `blink.cmp` for the migrated manual popup, completion keys, and Copilot-free completion source list.
+- `lua/plugins/copilot.lua` re-owns the old `copilot.lua` suggestion workflow, including `.env` attachment filtering and Blink menu hide hooks.
+- `lua/plugins/formatting.lua` keeps repo-local `conform.nvim` defaults and extends LazyVim's `formatting.prettier` extra so `svelte` also formats with Prettier.
 - `lua/plugins/terminal.lua` overrides `snacks.nvim` terminal behavior and adds migration-specific terminal keymaps.
+- `lua/plugins/mason.lua` restores the migrated Mason UI dimensions, border, and icon choices.
+- `lua/plugins/mini.lua` adds `mini.hipatterns` for hex-color highlighting.
+- `lua/plugins/picker.lua` overrides Telescope and Noice key ownership so search workflows stay under `<leader>s*` while bare `<leader>f` remains Format.
+- `lua/plugins/lsp.lua` overrides `nvim-lspconfig` key ownership for migrated leader-based LSP navigation and diagnostic float styling while leaving ESLint formatting available for LazyVim's documented fix-on-save recipe.
+- `lua/config/options.lua` sets `vim.g.lazyvim_prettier_needs_config = true`, so the Prettier extra only runs when a project-local Prettier config exists.
+- `lua/plugins/key-hints.lua` disables `nvim-mini/mini.clue` and extends LazyVim's default `which-key.nvim` spec with migration-aware group labels.
 - `lua/config/keymaps.lua` and `lua/config/options.lua` already contain migration overrides, so they should not be treated as upstream defaults.
-- `lua/plugins/example.lua` is still the starter example file and is inert because it returns `{}` early.
+- `lua/plugins/example.lua` has been removed from the active workspace.
 
 Practical consequence: when deciding whether a behavior is "already provided by LazyVim," check the upstream LazyVim defaults first, then compare them to the current repo override layer.
 
@@ -38,18 +47,20 @@ LazyVim is a Neovim distribution built on top of `lazy.nvim`. The user config st
 
 ### Load order
 
-1. `init.lua` loads `config.lazy`.
-2. `lua/config/lazy.lua` bootstraps `lazy.nvim` if needed and calls `require("lazy").setup(...)`.
-3. The setup spec imports `LazyVim/LazyVim` first through `import = "lazyvim.plugins"`.
-4. User plugin overrides are imported afterward through `import = "plugins"`.
-5. LazyVim default options load before plugin startup.
-6. LazyVim default keymaps and autocmds load on the `VeryLazy` event, then user `lua/config/keymaps.lua` and `lua/config/autocmds.lua` are applied.
+1. `init.lua` sets `vim.g.ai_cmp = false` before LazyVim parses extras so Copilot uses suggestion mode instead of a Blink AI source.
+2. `init.lua` loads `config.lazy`.
+3. `lua/config/lazy.lua` bootstraps `lazy.nvim` if needed and calls `require("lazy").setup(...)`.
+4. The setup spec imports `LazyVim/LazyVim` first through `import = "lazyvim.plugins"`.
+5. User plugin overrides are imported afterward through `import = "plugins"`.
+6. During LazyVim init, upstream `lazyvim.config.options` loads first and then user `lua/config/options.lua` loads after it, which is the point where final user option overrides should happen.
+7. After `require("lazy").setup(...)`, `lua/config/lazy.lua` explicitly requires `config.autocmds` and `config.keymaps` so local migration behavior is active during normal startup.
 
 ### Why the order matters
 
-- `lua/config/options.lua` is the correct place for core editor options because it runs before plugin setup.
-- `lua/config/keymaps.lua` is the correct place for global editor keymaps because it runs after defaults are in place and can remove or replace them.
+- `lua/config/options.lua` is the correct place for core editor options because LazyVim loads it after upstream defaults during init.
+- `lua/config/keymaps.lua` is the correct place for global editor keymaps because `config.lazy` loads it after plugin setup and it can remove or replace defaults.
 - `lua/plugins/*.lua` is the correct place for plugin spec changes because those files participate in lazy.nvim's merge rules.
+- Do not manually `require("config.options")` from `lua/config/lazy.lua`; doing so caches the module before LazyVim applies its own defaults and prevents later user overrides such as `relativenumber = false` from sticking.
 - LazyVim expects the import order `lazyvim.plugins` first, extras second if used, user `plugins` last. Do not invert that order.
 
 ## Configuration Surfaces
@@ -85,8 +96,12 @@ Representative upstream defaults:
 Customization guidance:
 
 - Set global LazyVim switches here when the upstream docs explicitly call for `vim.g.*` toggles.
+- If an extra reads a global during spec resolution, set that global in `init.lua` before `require("config.lazy")` so the extra sees the intended value during startup.
+- If LazyVim or an extra also reestablishes a runtime default for that same global during init, reassert the final runtime value here as well. `vim.g.ai_cmp = false` is one of those cases in this repo.
 - Do not put plugin `setup()` calls here.
 - When a plugin exposes an option through a documented global, prefer that over reimplementing its full plugin spec.
+
+Current migration note: `lua/config/options.lua` sets `vim.g.lazyvim_prettier_needs_config = true` so the LazyVim `formatting.prettier` extra keeps the old "only format when the project opted into Prettier" behavior.
 
 ### `lua/config/keymaps.lua`
 
@@ -111,7 +126,9 @@ Representative upstream defaults:
 
 Current migration note: `lua/config/keymaps.lua` intentionally takes user ownership of bare `<leader>w` for immediate buffer writes with `nowait = true`. This preserves the old save habit and means LazyVim's window-prefix discoverability under `<leader>w` should not be relied on unless that workflow is explicitly remapped later.
 
-Current migration note: `lua/config/keymaps.lua` also clears LazyVim's `<leader>f*` file/find namespace so bare `<leader>f` can run `LazyVim.format({ force = true })` immediately. The Snacks explorer is remapped directly to `<leader>e` because LazyVim's default `<leader>e` normally points through `<leader>fe`.
+Current migration note: `lua/config/keymaps.lua` clears LazyVim's global `<leader>f*` file/find namespace so bare `<leader>f` can run `LazyVim.format({ force = true })` immediately. Because the Telescope extra can add plugin-owned `<leader>f*` keys later, `lua/plugins/picker.lua` also disables those plugin keys and provides accepted search aliases under `<leader>s*`, `<leader>/`, `<leader><space>`, and `<leader>,`.
+
+Current migration note: `lua/plugins/key-hints.lua` is the allowlist for top-level leader groups and accepted immediate bindings during migration. If a top-level leader binding is outside those listed groups and immediate bindings, remove it from the active config for now instead of adding a standalone which-key entry to keep it. `lua/config/keymaps.lua` currently prunes unlisted top-level defaults such as `<leader><space>`, `<leader>,`, `<leader>/`, `<leader>.`, `<leader>:`, `<leader>?`, `<leader>S`, `<leader>b*`, and `<leader>n`, while keeping accepted immediate bindings on `<leader>e`, `<leader>E`, `<leader>f`, and `<leader>w`.
 
 Customization guidance:
 
@@ -152,7 +169,7 @@ This is the most important migration rule in the repo:
 
 ## Plugin Management Model
 
-LazyVim relies on lazy.nvim spec composition. You rarely replace a full plugin spec. You usually merge into one.
+LazyVim's own docs direct plugin customizations to `lua/plugins/*.lua` and expect specs to merge with LazyVim's defaults. You rarely replace a full plugin spec. You usually merge into one.
 
 ### Merge behavior that matters in this repo
 
@@ -163,6 +180,14 @@ When you add a plugin spec for a plugin already owned by LazyVim:
 - `dependencies` is extended
 - `cmd`, `event`, and `ft` are extended
 - most other scalar properties override the prior value
+
+Guidance from the LazyVim plugin docs:
+
+- Prefer an `opts` table for simple option changes, because it merges with LazyVim's default options.
+- Use `opts = function(_, opts) ... end` when you need to mutate an existing list or derive values from existing defaults.
+- Prefer `keys = { ... }` for plugin-owned keymaps; disable a plugin key with `{ lhs, false }` and include the exact same mode when the original key is not normal-mode only.
+- For LSP keymaps, use the `nvim-lspconfig` server config key list, normally `opts.servers["*"].keys`, because LazyVim documents LSP maps as server configuration rather than ordinary global maps.
+- If a plugin declares `opts_extend` for a list-like option such as `which-key.nvim`'s `spec`, append local entries instead of assigning the whole list. Use which-key's `hidden` or a later replacement entry for stale groups instead of replacing LazyVim's whole spec.
 
 ### Standard customization patterns
 
@@ -188,11 +213,11 @@ Merge plugin options:
 return {
   {
     "folke/snacks.nvim",
-    opts = function(_, opts)
-      opts.terminal = vim.tbl_deep_extend("force", opts.terminal or {}, {
+    opts = {
+      terminal = {
         win = { position = "float" },
-      })
-    end,
+      },
+    },
   },
 }
 ```
@@ -271,7 +296,7 @@ The current `lazy-lock.json` shows the plugin set actually installed in this rep
 | `tokyonight.nvim` | Upstream default theme | Default LazyVim colorscheme unless overridden. |
 | `trouble.nvim` | Diagnostics/issues UI | Core diagnostics and list interface. |
 | `ts-comments.nvim` | Treesitter-aware comments | Language-aware comment strings. |
-| `which-key.nvim` | Key-hint UI | Default discoverability layer for leader mappings. |
+| `which-key.nvim` | Key-hint UI | Active key discovery layer with local migration-aware group labels. |
 
 ### Default plugin ownership by responsibility
 
@@ -289,7 +314,7 @@ Use this to choose the correct implementation surface before editing:
 - Git gutter and blame: `gitsigns.nvim`
 - UI messaging: `noice.nvim`
 - Statusline: `lualine.nvim`
-- Key discovery: `which-key.nvim`
+- Key discovery: `which-key.nvim` in this repo; `mini.clue` is disabled locally by current preference.
 
 ## Extras System
 
@@ -301,7 +326,7 @@ Extras are optional feature packs shipped by LazyVim. They are the preferred way
 - Declarative: add the extra import in a plugin file
 - Metadata: `lazyvim.json` records enabled extras for the local config
 
-In this repository, `lazyvim.json` currently has an empty `extras` array, so migration work should assume the default baseline unless an extra is intentionally introduced.
+In this repository, `lazyvim.json` currently enables several extras, so migration work should check the active extras list before assuming the default baseline.
 
 ### Extras taxonomy
 
@@ -389,6 +414,8 @@ Good examples:
 ### LSP keymaps
 
 Do not scatter LSP maps across ad hoc modules. Use the `nvim-lspconfig` spec and attach keys in `servers["*"]` or a server-specific entry.
+
+Current migration note: `lua/plugins/lsp.lua` uses LazyVim's documented `opts.servers["*"].keys` surface to disable LSP defaults such as `K` and `<leader>cc` and add migrated `<leader>gd`, `<leader>gi`, `<leader>gt`, and `<leader>cd` mappings. Neovim core also creates a buffer-local `K` hover mapping on LSP attach, so the same plugin spec deletes that buffer-local key in an `LspAttach` autocmd.
 
 ### Removing defaults safely
 

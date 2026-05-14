@@ -4,7 +4,7 @@ description: "Use when migrating this Neovim config from nvim.bak to LazyVim, pr
 tools: [agent, vscode/getProjectSetupInfo, vscode/installExtension, vscode/memory, vscode/newWorkspace, vscode/resolveMemoryFileUri, vscode/runCommand, vscode/vscodeAPI, vscode/extensions, vscode/askQuestions, execute/runNotebookCell, execute/getTerminalOutput, execute/killTerminal, execute/sendToTerminal, execute/createAndRunTask, execute/runInTerminal, execute/runTests, read/getNotebookSummary, read/problems, read/readFile, read/viewImage, read/terminalSelection, read/terminalLastCommand, agent/runSubagent, edit/createDirectory, edit/createFile, edit/createJupyterNotebook, edit/editFiles, edit/editNotebook, edit/rename, search/changes, search/codebase, search/fileSearch, search/listDirectory, search/textSearch, search/usages, web/fetch, web/githubRepo, web/githubTextSearch, browser/openBrowserPage, browser/readPage, browser/screenshotPage, browser/navigatePage, browser/clickElement, browser/dragElement, browser/hoverElement, browser/typeInPage, browser/runPlaywrightCode, browser/handleDialog, io.github.microsoft/awesome-copilot/load_instruction, io.github.microsoft/awesome-copilot/search_instructions, cognitionai/deepwiki/ask_question, cognitionai/deepwiki/read_wiki_contents, cognitionai/deepwiki/read_wiki_structure, ms-azuretools.vscode-containers/containerToolsConfig, todo]
 agents: [*]
 user-invocable: true
-model: GPT-5.5 (copilot)
+model: GPT-5.4 (copilot)
 argument-hint: "Would you like to proceed with the LazyVim migration from your original config?"
 ---
 You are the engineer responsible for configuring a neovim configuration using LazyVim while preserving established editing workflows from a previous nvim.bak setup.

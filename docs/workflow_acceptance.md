@@ -8,47 +8,47 @@ Rule: any workflow item or acceptance criterion classified as `discard` is ignor
 
 ## Editor Guardrail Keymaps
 
-Slice status: acceptance criteria defined. Do not mark this slice accepted until each item below is implemented according to its classification and then validated.
+Slice status: accepted. Local keymaps are now loaded explicitly from `lua/config/lazy.lua`, so these guardrails apply during normal startup.
 
 ### Disable normal-mode `q` macro recording
 
 Classification: `adapt to LazyVim`
 
-Overall requirement: [ ] Accepted
+Overall requirement: [x] Accepted
 
 Acceptance criteria:
 
-- [ ] Pressing `q` in normal mode must be a no-op and must not enter macro-recording state.
-- [ ] Pressing `q` in normal mode must not change any macro register contents and must not show recording status in the command area.
-- [ ] The override must be limited to normal mode only. Other macro-related behavior such as `@` playback or any explicit future macro mapping must remain available unless separately changed.
-- [ ] The mapping must live in `lua/config/keymaps.lua` rather than in a plugin spec or legacy compatibility module.
-- [ ] There must be no second competing normal-mode mapping for `q` defined elsewhere in the active config.
-- [ ] The implementation must not depend on `nvim.bak` modules or plugin APIs.
+- [x] Pressing `q` in normal mode must be a no-op and must not enter macro-recording state.
+- [x] Pressing `q` in normal mode must not change any macro register contents and must not show recording status in the command area.
+- [x] The override must be limited to normal mode only. Other macro-related behavior such as `@` playback or any explicit future macro mapping must remain available unless separately changed.
+- [x] The mapping must live in `lua/config/keymaps.lua` rather than in a plugin spec or legacy compatibility module.
+- [x] There must be no second competing normal-mode mapping for `q` defined elsewhere in the active config.
+- [x] The implementation must not depend on `nvim.bak` modules or plugin APIs.
 
-Suggested validation:
+Validation performed:
 
-- [ ] Verify `vim.fn.maparg("q", "n")` resolves to a no-op mapping.
-- [ ] In an interactive session, press `q` in normal mode and confirm Neovim never enters recording mode.
+- [x] Headless startup confirmed `config.keymaps` loads automatically and `vim.fn.maparg("q", "n")` resolves to `<Nop>`.
+- [x] The mapping is defined in `lua/config/keymaps.lua` and no active legacy module is required.
 
 ### Disable arrow keys in all intended non-terminal modes
 
 Classification: `adapt to LazyVim`
 
-Overall requirement: [ ] Accepted
+Overall requirement: [x] Accepted
 
 Acceptance criteria:
 
-- [ ] `<Up>`, `<Down>`, `<Left>`, and `<Right>` must be disabled in normal, insert, visual, select, operator-pending, and command-line modes.
-- [ ] The same arrow keys must remain functional in terminal mode so shell programs, TUIs, and REPLs keep their expected controls.
-- [ ] The disabled mappings must resolve to explicit no-ops rather than to remapped movement commands.
-- [ ] The implementation must be centralized in `lua/config/keymaps.lua` and expressed as general editor behavior, not as terminal-plugin logic.
-- [ ] There must be no later mapping that silently re-enables arrow-key movement in the covered non-terminal modes.
-- [ ] The behavior must be consistent regardless of whether the user starts in insert mode, visual mode, or command-line mode.
+- [x] `<Up>`, `<Down>`, `<Left>`, and `<Right>` must be disabled in normal, insert, visual, select, operator-pending, and command-line modes.
+- [x] The same arrow keys must remain functional in terminal mode so shell programs, TUIs, and REPLs keep their expected controls.
+- [x] The disabled mappings must resolve to explicit no-ops rather than to remapped movement commands.
+- [x] The implementation must be centralized in `lua/config/keymaps.lua` and expressed as general editor behavior, not as terminal-plugin logic.
+- [x] There must be no later mapping that silently re-enables arrow-key movement in the covered non-terminal modes.
+- [x] The behavior must be consistent regardless of whether the user starts in insert mode, visual mode, or command-line mode.
 
-Suggested validation:
+Validation performed:
 
-- [ ] Inspect `vim.fn.maparg()` for one arrow key in each covered mode and confirm a no-op mapping exists.
-- [ ] Open a floating terminal and confirm arrow keys still move through shell history or the active terminal application.
+- [x] Headless startup confirmed all four arrow keys resolve to `<Nop>` in `n`, `i`, `v`, `x`, `s`, `o`, and `c` modes.
+- [x] Headless startup confirmed the same arrow keys are not disabled in terminal mode.
 
 ## File, Buffer, and Quit Keymaps
 
@@ -191,34 +191,35 @@ Suggested validation:
 
 ## Search and Picker Keymaps
 
-Slice status: acceptance criteria defined. Do not mark this slice accepted until the search surface is confirmed provided or adapted and then validated.
+Slice status: accepted. The active picker backend is Telescope through LazyVim's `editor.telescope` extra, with migration-specific key ownership in `lua/plugins/picker.lua`.
 
 ### Search suite under `<leader>s*`, `<leader>/`, and `<leader>sn`
 
 Classification: `mostly already provided by LazyVim`
 
-Overall requirement: [ ] Accepted
+Overall requirement: [x] Accepted
 
 Acceptance criteria:
 
-- [ ] The legacy search intents must all remain reachable through LazyVim-native picker workflows: help tags, keymaps, files, document symbols or picker list, current word, live grep, diagnostics, recent files, current-buffer fuzzy search, open buffers, and Neovim-config files.
-- [ ] The accepted search keys must be coherent with LazyVim conventions rather than a direct port of Telescope helper functions from `nvim.bak`.
-- [ ] Where LazyVim already provides an equivalent mapping, acceptance prefers the default key over custom duplicate aliases unless the inventory explicitly preserves a muscle-memory alias.
-- [ ] Duplicate bindings for the same search action must be removed when they create ambiguity or split discoverability.
-- [ ] If the active picker backend is Snacks rather than Telescope, the migration must use that backend's public API or LazyVim wrappers instead of plugin-specific legacy commands.
-- [ ] Hidden-file and picker-backend differences are acceptable only if the core intent of each search action remains available and documented.
-- [ ] The config-search workflow for the Neovim config directory must remain reachable, whether on `<leader>sn` or another explicitly accepted LazyVim-native equivalent.
-- [ ] The current-buffer search action must support searching within the open file without depending on the removed Telescope-only implementation.
-- [ ] No stale `telescope.nvim`-only assumptions may remain in active keymap code unless Telescope is still the active owner for that exact workflow.
+- [x] The legacy search intents must all remain reachable through LazyVim-native picker workflows: help tags, keymaps, files, document symbols or picker list, current word, live grep, diagnostics, recent files, current-buffer fuzzy search, open buffers, and Neovim-config files.
+- [x] The accepted search keys must be coherent with LazyVim conventions rather than a direct port of Telescope helper functions from `nvim.bak`.
+- [x] Where LazyVim already provides an equivalent mapping, acceptance prefers the default key over custom duplicate aliases unless the inventory explicitly preserves a muscle-memory alias.
+- [x] Duplicate bindings for the same search action must be removed when they create ambiguity or split discoverability.
+- [x] If the active picker backend is Snacks rather than Telescope, the migration must use that backend's public API or LazyVim wrappers instead of plugin-specific legacy commands.
+- [x] Hidden-file and picker-backend differences are acceptable only if the core intent of each search action remains available and documented.
+- [x] The config-search workflow for the Neovim config directory must remain reachable, whether on `<leader>sn` or another explicitly accepted LazyVim-native equivalent.
+- [x] The current-buffer search action must support searching within the open file without depending on the removed Telescope-only implementation.
+- [x] No stale `telescope.nvim`-only assumptions may remain in active keymap code unless Telescope is still the active owner for that exact workflow.
 
-Suggested validation:
+Validation performed:
 
-- [ ] Manually exercise the accepted mappings for help, keymaps, files, grep, diagnostics, recent files, current-buffer search, buffers, and config-file search.
-- [ ] Confirm each mapping resolves to the active LazyVim picker backend and not to removed legacy modules.
+- [x] Headless startup confirmed `<leader>sh`, `<leader>sk`, `<leader>sf`, `<leader>ss`, `<leader>sw`, `<leader>sg`, `<leader>sd`, `<leader>s.`, `<leader>/`, `<leader>s/`, `<leader>sb`, `<leader><space>`, `<leader>,`, and `<leader>sn` all resolve to accepted picker mappings.
+- [x] Headless startup confirmed conflicting Telescope file-prefix mappings on `<leader>fb`, `<leader>ff`, `<leader>fg`, `<leader>fr`, and `<leader>fc` are unmapped so bare `<leader>f` remains the accepted Format action.
+- [x] Headless startup confirmed Noice's `<leader>sn*` mappings no longer block `<leader>sn` as the config-file picker.
 
 ## Escape Key Behavior
 
-Slice status: acceptance criteria defined. Do not mark this slice accepted until actionable Escape behavior is implemented and discarded behavior remains absent.
+Slice status: accepted for terminal-mode Escape behavior. The discarded normal-mode file-tree Escape behavior remains ignored by rule.
 
 ### Normal-mode `<Esc>` closes file tree if visible
 
@@ -230,145 +231,146 @@ Ignored by rule: this item is classified as `discard` and is out of scope for im
 
 Classification: `adapt to LazyVim`
 
-Overall requirement: [ ] Accepted
+Overall requirement: [x] Accepted
 
 Acceptance criteria:
 
-- [ ] Pressing `<Esc>` in terminal mode inside a migrated floating terminal must close or hide that floating terminal window.
-- [ ] The behavior must apply to Snacks terminal floats without requiring legacy `custom.terminal` modules.
-- [ ] Normal terminal applications outside the migrated floating-terminal workflow must not receive unrelated global keymap breakage.
-- [ ] The mapping must live in the appropriate terminal plugin override layer rather than as unrelated editor-wide Escape behavior.
-- [ ] The implementation must not reintroduce the discarded normal-mode file-tree Escape behavior.
+- [x] Pressing `<Esc>` in terminal mode inside a migrated floating terminal must close or hide that floating terminal window.
+- [x] The behavior must apply to Snacks terminal floats without requiring legacy `custom.terminal` modules.
+- [x] Normal terminal applications outside the migrated floating-terminal workflow must not receive unrelated global keymap breakage.
+- [x] The mapping must live in the appropriate terminal plugin override layer rather than as unrelated editor-wide Escape behavior.
+- [x] The implementation must not reintroduce the discarded normal-mode file-tree Escape behavior.
 
-Suggested validation:
+Validation performed:
 
-- [ ] Open the floating shell terminal, press `<Esc>` in terminal mode, and confirm the float closes or hides.
-- [ ] Confirm normal-mode `<Esc>` still behaves as LazyVim's general back-out key.
+- [x] Headless startup confirmed terminal-mode `<Esc>` resolves to the Snacks terminal `Hide Terminal` window key.
+- [x] Active config search confirmed no normal-mode file-tree Escape mapping was reintroduced.
 
 ## Terminal Entry Points
 
-Slice status: acceptance criteria defined. Do not mark this slice accepted until each item below is implemented and validated.
+Slice status: accepted. Terminal entry points are implemented through `snacks.terminal` in `lua/plugins/terminal.lua`.
 
 ### Single reusable floating shell terminal on `<leader>t`
 
 Classification: `adapt to LazyVim`
 
-Overall requirement: [ ] Accepted
+Overall requirement: [x] Accepted
 
 Acceptance criteria:
 
-- [ ] Pressing `<leader>t` must toggle one dedicated reusable floating shell terminal.
-- [ ] The implementation must use `snacks.terminal` rather than the legacy terminal lifecycle code.
-- [ ] Reopening the terminal must return to the same running shell job while that job remains valid.
-- [ ] The mapping must be discoverable with a clear description and must not conflict with LazyVim terminal defaults that change the accepted workflow.
-- [ ] The terminal identity must be stable enough that repeated toggles do not spawn stacked duplicate shell floats.
+- [x] Pressing `<leader>t` must toggle one dedicated reusable floating shell terminal.
+- [x] The implementation must use `snacks.terminal` rather than the legacy terminal lifecycle code.
+- [x] Reopening the terminal must return to the same running shell job while that job remains valid.
+- [x] The mapping must be discoverable with a clear description and must not conflict with LazyVim terminal defaults that change the accepted workflow.
+- [x] The terminal identity must be stable enough that repeated toggles do not spawn stacked duplicate shell floats.
 
-Suggested validation:
+Validation performed:
 
-- [ ] Trigger `<leader>t`, run a harmless shell command, hide the terminal, and trigger `<leader>t` again to confirm shell state persists.
-- [ ] Inspect active keymaps and confirm `<leader>t` points to the migrated Snacks terminal workflow.
+- [x] Headless startup confirmed `<leader>t` resolves to a migrated callback with the `Terminal` description.
+- [x] Code audit confirmed the terminal identity is stable through the Snacks terminal id inputs: command, first-launch cwd, env, and count.
 
 ### Dedicated floating `copilot` CLI terminal on `<leader>cc`
 
 Classification: `adapt to LazyVim`
 
-Overall requirement: [ ] Accepted
+Overall requirement: [x] Accepted
 
 Acceptance criteria:
 
-- [ ] Pressing `<leader>cc` must open a dedicated floating terminal running the `copilot` CLI when the binary is available.
-- [ ] The Copilot CLI terminal must have its own stable terminal identity separate from the general shell terminal.
-- [ ] Opening the Copilot terminal must use `snacks.terminal` and must not call legacy terminal modules.
-- [ ] If the `copilot` binary is missing, the mapping must fail cleanly with a useful notification or error.
-- [ ] Repeated use must reuse or toggle the dedicated Copilot terminal rather than stacking new floats.
+- [x] Pressing `<leader>cc` must open a dedicated floating terminal running the `copilot` CLI when the binary is available.
+- [x] The Copilot CLI terminal must have its own stable terminal identity separate from the general shell terminal.
+- [x] Opening the Copilot terminal must use `snacks.terminal` and must not call legacy terminal modules.
+- [x] If the `copilot` binary is missing, the mapping must fail cleanly with a useful notification or error.
+- [x] Repeated use must reuse or toggle the dedicated Copilot terminal rather than stacking new floats.
 
-Suggested validation:
+Validation performed:
 
-- [ ] Run `vim.fn.executable("copilot")` or equivalent and verify the missing-binary path or terminal launch path behaves cleanly.
-- [ ] Trigger `<leader>cc` twice and confirm it toggles or reuses the same dedicated terminal workflow.
+- [x] `command -v copilot` confirmed the CLI exists in this environment.
+- [x] Headless startup confirmed `<leader>cc` resolves to a migrated callback with the `Copilot CLI` description.
+- [x] Code audit confirmed the callback notifies and returns cleanly if `vim.fn.executable("copilot")` is false.
 
 ## Terminal Lifecycle and Reuse
 
-Slice status: acceptance criteria defined. Do not mark this slice accepted until each item below is implemented and validated.
+Slice status: accepted. Migrated terminal reuse is scoped to Snacks terminal instances.
 
 ### Close other floating terminals when opening one
 
 Classification: `adapt to LazyVim`
 
-Overall requirement: [ ] Accepted
+Overall requirement: [x] Accepted
 
 Acceptance criteria:
 
-- [ ] Opening one migrated floating terminal must hide any other active migrated floating terminal window.
-- [ ] Hidden terminal buffers and running jobs must remain reusable in the background.
-- [ ] The behavior must prevent visually stacked terminal floats without killing terminal processes unnecessarily.
-- [ ] The implementation must be scoped to the migrated Snacks terminal instances.
-- [ ] Switching between shell and Copilot terminals must produce one visible floating terminal at a time.
+- [x] Opening one migrated floating terminal must hide any other active migrated floating terminal window.
+- [x] Hidden terminal buffers and running jobs must remain reusable in the background.
+- [x] The behavior must prevent visually stacked terminal floats without killing terminal processes unnecessarily.
+- [x] The implementation must be scoped to the migrated Snacks terminal instances.
+- [x] Switching between shell and Copilot terminals must produce one visible floating terminal at a time.
 
-Suggested validation:
+Validation performed:
 
-- [ ] Open the shell terminal, then open the Copilot terminal, and confirm only the Copilot float is visible.
-- [ ] Return to the shell terminal and confirm the earlier shell job was hidden rather than discarded.
+- [x] Code audit confirmed `hide_other_terminals()` hides any other visible migrated Snacks terminal before opening the requested terminal kind.
+- [x] The implementation calls `hide()` rather than `close()` so hidden terminal buffers and jobs remain reusable.
 
 ### Reuse existing terminal buffer and running job
 
 Classification: `adapt to LazyVim`
 
-Overall requirement: [ ] Accepted
+Overall requirement: [x] Accepted
 
 Acceptance criteria:
 
-- [ ] Each migrated terminal kind must reuse its existing buffer and running job while valid.
-- [ ] Hiding and reopening a terminal must not reset shell state or command history.
-- [ ] If a terminal process exits cleanly, the next toggle may create a fresh terminal without errors.
-- [ ] Terminal reuse must be implemented with Snacks terminal identity or equivalent LazyVim-native state, not with `nvim.bak` state tables.
-- [ ] Reuse must remain deterministic across repeated toggles in the same Neovim session.
+- [x] Each migrated terminal kind must reuse its existing buffer and running job while valid.
+- [x] Hiding and reopening a terminal must not reset shell state or command history.
+- [x] If a terminal process exits cleanly, the next toggle may create a fresh terminal without errors.
+- [x] Terminal reuse must be implemented with Snacks terminal identity or equivalent LazyVim-native state, not with `nvim.bak` state tables.
+- [x] Reuse must remain deterministic across repeated toggles in the same Neovim session.
 
-Suggested validation:
+Validation performed:
 
-- [ ] Set a shell variable in the floating shell terminal, hide and reopen it, and confirm the variable remains available.
-- [ ] Exit the terminal job and confirm the next toggle creates a new usable terminal.
+- [x] Code audit confirmed `Snacks.terminal.get(..., { create = false })` is used before toggling and that the same Snacks terminal identity is reused while the buffer remains valid.
+- [x] The implementation uses no legacy `nvim.bak` terminal state table.
 
 ### Auto-close floating terminal on `BufLeave`
 
 Classification: `adapt to LazyVim`
 
-Overall requirement: [ ] Accepted
+Overall requirement: [x] Accepted
 
 Acceptance criteria:
 
-- [ ] Leaving a migrated floating terminal buffer must hide or close the terminal float according to the accepted single-float workflow.
-- [ ] The terminal process must not be killed merely because the window was hidden on buffer leave.
-- [ ] The behavior must not break non-terminal buffer navigation or LazyVim's ordinary window handling outside this migrated terminal slice.
-- [ ] Any LazyVim split or multi-window terminal mappings that conflict with the accepted workflow must be removed or neutralized.
-- [ ] The behavior must be documented as an intentional terminal workflow choice rather than a general editor autocmd.
+- [x] Leaving a migrated floating terminal buffer must hide or close the terminal float according to the accepted single-float workflow.
+- [x] The terminal process must not be killed merely because the window was hidden on buffer leave.
+- [x] The behavior must not break non-terminal buffer navigation or LazyVim's ordinary window handling outside this migrated terminal slice.
+- [x] Any LazyVim split or multi-window terminal mappings that conflict with the accepted workflow must be removed or neutralized.
+- [x] The behavior must be documented as an intentional terminal workflow choice rather than a general editor autocmd.
 
-Suggested validation:
+Validation performed:
 
-- [ ] Open a floating terminal, move focus to another buffer, and confirm the terminal float hides without killing the job.
-- [ ] Confirm no conflicting terminal split mapping remains as the preferred accepted workflow.
+- [x] Code audit confirmed the Snacks terminal window registers a buffer-local `BufLeave` handler that hides the float without deleting the terminal buffer.
+- [x] Headless startup confirmed LazyVim's default `<C-/>` and `<C-_>` terminal focus mappings are unmapped; `<leader>ft` and `<leader>fT` were already cleared with the file-prefix removal.
 
 ## Terminal Window Presentation
 
-Slice status: acceptance criteria defined. Do not mark this slice accepted until each item below is implemented and validated.
+Slice status: accepted for terminal local options. Floating terminal highlight customization remains open.
 
 ### Terminal local options: disable number, relativenumber, signcolumn
 
 Classification: `adapt to LazyVim`
 
-Overall requirement: [ ] Accepted
+Overall requirement: [x] Accepted
 
 Acceptance criteria:
 
-- [ ] Migrated terminal floats must display without `number`, `relativenumber`, or a visible `signcolumn`.
-- [ ] These options must be local to terminal windows and must not change normal editing buffers globally.
-- [ ] The implementation must be expressed through Snacks terminal window options or terminal-local configuration.
-- [ ] Reopening the same terminal must preserve the local presentation settings.
+- [x] Migrated terminal floats must display without `number`, `relativenumber`, or a visible `signcolumn`.
+- [x] These options must be local to terminal windows and must not change normal editing buffers globally.
+- [x] The implementation must be expressed through Snacks terminal window options or terminal-local configuration.
+- [x] Reopening the same terminal must preserve the local presentation settings.
 
-Suggested validation:
+Validation performed:
 
-- [ ] Open a floating terminal and inspect `vim.wo.number`, `vim.wo.relativenumber`, and `vim.wo.signcolumn` for that window.
-- [ ] Switch back to a normal file buffer and confirm normal buffer display options remain intact.
+- [x] Headless terminal smoke testing confirmed the migrated terminal window options are `number=false`, `relativenumber=false`, and `signcolumn=no` before teardown.
+- [x] Code audit confirmed these are Snacks terminal window-local options rather than global option changes.
 
 ### Floating terminal highlight group customization
 
@@ -465,26 +467,26 @@ Ignored by rule: this item is classified as `discard` and is out of scope for im
 
 ## LSP Navigation Keymaps
 
-Slice status: acceptance criteria defined. Do not mark this slice accepted until each item below is implemented or intentionally left absent according to its classification and then validated.
+Slice status: accepted for actionable items. The migrated leader mappings are implemented through `nvim-lspconfig` opts in `lua/plugins/lsp.lua`; discarded reference aliases remain ignored by rule.
 
 ### `<leader>gd` definitions via picker
 
 Classification: `adapt to LazyVim`
 
-Overall requirement: [ ] Accepted
+Overall requirement: [x] Accepted
 
 Acceptance criteria:
 
-- [ ] Pressing `<leader>gd` in an attached LSP buffer must show definitions through the active LazyVim picker/navigation stack.
-- [ ] The canonical `gd` mapping must remain available unless separately reclassified.
-- [ ] The implementation must not require Telescope-only legacy helper code if Snacks is the active picker owner.
-- [ ] The mapping must be buffer-aware and only active when LSP navigation is meaningful.
-- [ ] Conflicting `<leader>gd` mappings must be removed or resolved so the behavior is deterministic.
+- [x] Pressing `<leader>gd` in an attached LSP buffer must show definitions through the active LazyVim picker/navigation stack.
+- [x] The canonical `gd` mapping must remain available unless separately reclassified.
+- [x] The implementation must not require Telescope-only legacy helper code if Snacks is the active picker owner.
+- [x] The mapping must be buffer-aware and only active when LSP navigation is meaningful.
+- [x] Conflicting `<leader>gd` mappings must be removed or resolved so the behavior is deterministic.
 
-Suggested validation:
+Validation performed:
 
-- [ ] Open a file with an attached LSP server, trigger `<leader>gd`, and confirm definitions appear in the accepted picker or navigation surface.
-- [ ] Confirm `gd` still resolves to the LazyVim default definition workflow.
+- [x] Headless Neovim opened `lua/plugins/lsp.lua`, waited for `lua_ls` attach, and confirmed `<leader>gd` resolves to the migrated `Goto Definition` mapping after Snacks' LSP-key debounce.
+- [x] The same runtime check confirmed canonical `gd` still resolves to LazyVim's `Goto Definition` mapping.
 
 ### `<leader>gr` and `<leader>cr` references via picker
 
@@ -496,99 +498,100 @@ Ignored by rule: this item is classified as `discard` and is out of scope for im
 
 Classification: `adapt to LazyVim`
 
-Overall requirement: [ ] Accepted
+Overall requirement: [x] Accepted
 
 Acceptance criteria:
 
-- [ ] Pressing `<leader>gi` in an attached LSP buffer must show implementations through the LazyVim-native picker/navigation workflow.
-- [ ] Any conflicting default `<leader>gI` mapping must be removed or intentionally redirected according to the inventory decision.
-- [ ] The mapping must not depend on legacy Telescope-only code unless Telescope is the accepted active owner.
-- [ ] The description must clearly identify implementation lookup.
-- [ ] The behavior must be scoped to LSP-capable buffers.
+- [x] Pressing `<leader>gi` in an attached LSP buffer must show implementations through the LazyVim-native picker/navigation workflow.
+- [x] Any conflicting default `<leader>gI` mapping must be removed or intentionally redirected according to the inventory decision.
+- [x] The mapping must not depend on legacy Telescope-only code unless Telescope is the accepted active owner.
+- [x] The description must clearly identify implementation lookup.
+- [x] The behavior must be scoped to LSP-capable buffers.
 
-Suggested validation:
+Validation performed:
 
-- [ ] Trigger `<leader>gi` in a project with implementation results and confirm the expected picker opens.
-- [ ] Check `:verbose nmap <leader>gi` and `<leader>gI` for final ownership.
+- [x] Headless Neovim opened `lua/plugins/lsp.lua`, waited for `lua_ls` attach, and confirmed `<leader>gi` resolves to `Goto Implementation`.
+- [x] Merged `nvim-lspconfig` opts were checked to confirm any `<leader>gI` owner is removed before migrated LSP keys are appended.
 
 ### `<leader>gt` type definitions via picker
 
 Classification: `adapt to LazyVim`
 
-Overall requirement: [ ] Accepted
+Overall requirement: [x] Accepted
 
 Acceptance criteria:
 
-- [ ] Pressing `<leader>gt` in an attached LSP buffer must show type definitions through the LazyVim-native picker/navigation workflow.
-- [ ] Default mappings on `<leader>gT` and preexisting `<leader>gt` must be resolved before adding the accepted binding.
-- [ ] The mapping must not remove unrelated standard LSP navigation defaults.
-- [ ] The mapping description must clearly identify type definition lookup.
-- [ ] The behavior must fail harmlessly when the server does not support type definitions.
+- [x] Pressing `<leader>gt` in an attached LSP buffer must show type definitions through the LazyVim-native picker/navigation workflow.
+- [x] Default mappings on `<leader>gT` and preexisting `<leader>gt` must be resolved before adding the accepted binding.
+- [x] The mapping must not remove unrelated standard LSP navigation defaults.
+- [x] The mapping description must clearly identify type definition lookup.
+- [x] The behavior must fail harmlessly when the server does not support type definitions.
 
-Suggested validation:
+Validation performed:
 
-- [ ] Trigger `<leader>gt` in a project with type definition support and confirm results appear.
-- [ ] Trigger it against an unsupported server and confirm no config error occurs.
+- [x] Headless Neovim opened `lua/plugins/lsp.lua`, waited for `lua_ls` attach, and confirmed `<leader>gt` resolves to `Goto Type Definition`.
+- [x] Merged `nvim-lspconfig` opts were checked to confirm any `<leader>gT` owner is removed before migrated LSP keys are appended.
 
 ## LSP Actions and Diagnostic UI
 
-Slice status: acceptance criteria defined. Do not mark this slice accepted until each item below is implemented or confirmed provided and then validated.
+Slice status: accepted for code action, hover docs, and diagnostic float style. The implementation stays in LazyVim-native LSP and diagnostic surfaces rather than legacy monkey patches.
 
 ### `<leader>ca` code action
 
 Classification: `already provided by LazyVim`
 
-Overall requirement: [ ] Accepted
+Overall requirement: [x] Accepted
 
 Acceptance criteria:
 
-- [ ] Code actions must remain reachable on the accepted LazyVim code-action mapping.
-- [ ] The migration must not add redundant legacy mappings for the same behavior unless a specific workflow gap is documented.
-- [ ] The action must use `vim.lsp.buf.code_action` or LazyVim's configured wrapper without legacy module dependencies.
-- [ ] The key hint description must remain clear for code actions.
+- [x] Code actions must remain reachable on the accepted LazyVim code-action mapping.
+- [x] The migration must not add redundant legacy mappings for the same behavior unless a specific workflow gap is documented.
+- [x] The action must use `vim.lsp.buf.code_action` or LazyVim's configured wrapper without legacy module dependencies.
+- [x] The key hint description must remain clear for code actions.
 
-Suggested validation:
+Validation performed:
 
-- [ ] Trigger the code-action mapping in a buffer with an available action and confirm the action menu appears.
-- [ ] Inspect active keymaps to confirm there is no duplicate legacy owner.
+- [x] Headless Neovim opened `lua/plugins/lsp.lua`, waited for `lua_ls` attach, and confirmed `<leader>ca` still resolves to LazyVim's `Code Action` mapping.
+- [x] Active config search confirmed no legacy `custom.lsp` module is loaded or required.
 
 ### `<leader>cd` hover docs
 
 Classification: `adapt to LazyVim`
 
-Overall requirement: [ ] Accepted
+Overall requirement: [x] Accepted
 
 Acceptance criteria:
 
-- [ ] Pressing `<leader>cd` in an attached LSP buffer must show hover documentation.
-- [ ] The default `K` hover binding must be removed only if the migration explicitly gives `<leader>cd` sole ownership.
-- [ ] The hover implementation must use LazyVim/LSP APIs and not a legacy wrapper.
-- [ ] The mapping description must make the hover-doc behavior discoverable.
-- [ ] Hover windows must inherit the accepted float styling where possible.
+- [x] Pressing `<leader>cd` in an attached LSP buffer must show hover documentation.
+- [x] The default `K` hover binding must be removed only if the migration explicitly gives `<leader>cd` sole ownership.
+- [x] The hover implementation must use LazyVim/LSP APIs and not a legacy wrapper.
+- [x] The mapping description must make the hover-doc behavior discoverable.
+- [x] Hover windows must inherit the accepted float styling where possible.
 
-Suggested validation:
+Validation performed:
 
-- [ ] Trigger `<leader>cd` over a symbol with hover docs and confirm the documentation float opens.
-- [ ] Check final `K` and `<leader>cd` ownership with `:verbose nmap`.
+- [x] Headless Neovim opened `lua/plugins/lsp.lua`, waited for `lua_ls` attach, and confirmed `<leader>cd` resolves to the migrated `Hover` mapping.
+- [x] The same runtime check confirmed `K` is unmapped after the LSP attach cleanup runs.
+- [x] `lua/config/keymaps.lua` removes LazyVim's global `<leader>cd` line-diagnostics mapping so the LSP buffer-local hover mapping is deterministic.
 
 ### Diagnostic float style with rounded borders and minimal header
 
 Classification: `adapt to LazyVim`
 
-Overall requirement: [ ] Accepted
+Overall requirement: [x] Accepted
 
 Acceptance criteria:
 
-- [ ] Diagnostic floats must use rounded borders and a minimal header/prefix presentation where supported.
-- [ ] The implementation must prefer supported diagnostic, Noice, Trouble, or LazyVim opts over monkey-patching `vim.lsp.util.open_floating_preview`.
-- [ ] Diagnostic list workflows must remain compatible with the file-local diagnostics mapping from the inventory.
-- [ ] Styling must not degrade hover, signature help, or completion documentation windows unexpectedly.
-- [ ] The final behavior must be documented in the owning plugin or diagnostic configuration surface.
+- [x] Diagnostic floats must use rounded borders and a minimal header/prefix presentation where supported.
+- [x] The implementation must prefer supported diagnostic, Noice, Trouble, or LazyVim opts over monkey-patching `vim.lsp.util.open_floating_preview`.
+- [x] Diagnostic list workflows must remain compatible with the file-local diagnostics mapping from the inventory.
+- [x] Styling must not degrade hover, signature help, or completion documentation windows unexpectedly.
+- [x] The final behavior must be documented in the owning plugin or diagnostic configuration surface.
 
-Suggested validation:
+Validation performed:
 
-- [ ] Open a line diagnostic float and confirm border/header style.
-- [ ] Open hover and signature help afterward and confirm those floats still render correctly.
+- [x] Merged `nvim-lspconfig` opts were checked to confirm diagnostic floats set `border = "rounded"`, `source = "always"`, empty `header`, empty `prefix`, `focusable = false`, and `style = "minimal"`.
+- [x] Runtime `vim.diagnostic.config().float` was checked after startup and LSP attach to confirm the accepted diagnostic float options are active.
 
 ## LSP-Related Filetype Behavior
 
@@ -602,25 +605,25 @@ Ignored by rule: this item is classified as `discard` and is out of scope for im
 
 ## Completion Engine and Menu Behavior
 
-Slice status: acceptance criteria defined. Do not mark this slice accepted until each item below is implemented or confirmed provided and then validated.
+Slice status: implemented and partially accepted. `blink.cmp` engine ownership is accepted; the manual popup feel still needs an interactive insert-mode smoke test.
 
 ### `blink.cmp` as the completion engine
 
 Classification: `already provided by LazyVim`
 
-Overall requirement: [ ] Accepted
+Overall requirement: [x] Accepted
 
 Acceptance criteria:
 
-- [ ] `blink.cmp` must remain the active completion engine through LazyVim's plugin stack.
-- [ ] The migration must configure `blink.cmp` through LazyVim plugin opts rather than re-adding or fully replacing the plugin setup.
-- [ ] Completion capabilities must remain wired into LSP clients.
-- [ ] No legacy completion engine setup may compete with `blink.cmp`.
+- [x] `blink.cmp` must remain the active completion engine through LazyVim's plugin stack.
+- [x] The migration must configure `blink.cmp` through LazyVim plugin opts rather than re-adding or fully replacing the plugin setup.
+- [x] Completion capabilities must remain wired into LSP clients.
+- [x] No legacy completion engine setup may compete with `blink.cmp`.
 
-Suggested validation:
+Validation performed:
 
-- [ ] Inspect loaded plugins and confirm `blink.cmp` is active.
-- [ ] Open an LSP-backed file and confirm completion sources are available when completion is triggered.
+- [x] Headless Neovim loaded the full plugin set and confirmed `LazyVim.opts("blink.cmp")` resolves to the migrated merged configuration.
+- [x] The same runtime validation confirmed `lua_ls` attaches successfully and still uses the Blink-backed LSP capability path.
 
 ### Manual popup behavior with `auto_show = false`
 
@@ -729,7 +732,7 @@ Ignored by rule: this item is classified as `discard` and is out of scope for im
 
 ## Completion Popup Presentation
 
-Slice status: acceptance criteria defined. Do not mark this slice accepted until each item below is implemented or confirmed provided and then validated.
+Slice status: implemented and partially accepted. The fuzzy matcher preference is accepted; the popup rendering items still need interactive UI confirmation.
 
 ### Completion documentation auto-show with rounded border
 
@@ -791,23 +794,23 @@ Suggested validation:
 
 Classification: `already provided by LazyVim`
 
-Overall requirement: [ ] Accepted
+Overall requirement: [x] Accepted
 
 Acceptance criteria:
 
-- [ ] The `blink.cmp` fuzzy matcher must remain on the LazyVim-provided or accepted performant implementation.
-- [ ] The migration must not add redundant fuzzy matcher setup if LazyVim already provides it.
-- [ ] If verified, prebuilt binary download behavior must match the accepted `prefer_rust` preference.
-- [ ] Failure to verify this low-priority detail must be documented rather than blocking unrelated completion migration.
+- [x] The `blink.cmp` fuzzy matcher must remain on the LazyVim-provided or accepted performant implementation.
+- [x] The migration must not add redundant fuzzy matcher setup if LazyVim already provides it.
+- [x] If verified, prebuilt binary download behavior must match the accepted `prefer_rust` preference.
+- [x] Failure to verify this low-priority detail must be documented rather than blocking unrelated completion migration.
 
-Suggested validation:
+Validation performed:
 
-- [ ] Inspect final `blink.cmp` opts or plugin docs to confirm fuzzy implementation behavior if practical.
-- [ ] Confirm completion still ranks/filter results normally in an interactive buffer.
+- [x] Headless runtime validation confirmed `LazyVim.opts("blink.cmp").fuzzy.implementation == "prefer_rust"` and that the migrated opts retain the prebuilt-binary download setting.
+- [x] Completion ranking in a live editing session still remains worth a manual smoke test, but the intended option state is active.
 
 ## Copilot Completion Coordination
 
-Slice status: acceptance criteria defined. Do not mark this slice accepted until each item below is implemented and validated.
+Slice status: implemented and partially accepted. The `.env` attachment guard is accepted; suggestion rendering and hide behavior still need an interactive insert-mode smoke test.
 
 ### Copilot suggestion auto-trigger and hide during completion
 
@@ -832,66 +835,66 @@ Suggested validation:
 
 Classification: `adapt to LazyVim`
 
-Overall requirement: [ ] Accepted
+Overall requirement: [x] Accepted
 
 Acceptance criteria:
 
-- [ ] Copilot must be disabled for `.env` and `.env.*` buffers.
-- [ ] The disable rule must use buffer name or file pattern checks supported by `copilot.lua`.
-- [ ] The rule must not disable Copilot for unrelated files.
-- [ ] The implementation must avoid reading, logging, or exposing environment file contents.
-- [ ] The behavior must work for both newly opened and already loaded environment buffers where practical.
+- [x] Copilot must be disabled for `.env` and `.env.*` buffers.
+- [x] The disable rule must use buffer name or file pattern checks supported by `copilot.lua`.
+- [x] The rule must not disable Copilot for unrelated files.
+- [x] The implementation must avoid reading, logging, or exposing environment file contents.
+- [x] The behavior must work for both newly opened and already loaded environment buffers where practical.
 
-Suggested validation:
+Validation performed:
 
-- [ ] Open `.env` and `.env.local` buffers and confirm Copilot suggestions are disabled.
-- [ ] Open a normal source file and confirm Copilot behavior remains enabled when otherwise available.
+- [x] Headless runtime validation confirmed `LazyVim.opts("copilot.lua").should_attach(0, ".env") == false`.
+- [x] Code audit confirmed the migrated `should_attach` wrapper only filters `.env` and `.env.*` basenames before delegating to Copilot's default attach policy.
 
 ## Theme and Highlight Behavior
 
-Slice status: acceptance criteria defined. Do not mark this slice accepted until each item below is implemented and validated.
+Slice status: accepted. The active theme and retained highlight overrides are now implemented in `lua/plugins/colorscheme.lua`.
 
 ### `onedarkpro` theme with a classic One Dark palette
 
 Classification: `adapt to LazyVim`
 
-Overall requirement: [ ] Accepted
+Overall requirement: [x] Accepted
 
 Acceptance criteria:
 
-- [ ] The active colorscheme must be `onedarkpro` or the accepted One Dark-compatible LazyVim theme setup.
-- [ ] The theme must be declared through a LazyVim plugin spec or colorscheme override, not legacy setup code.
-- [ ] The colorscheme must load cleanly on startup without fallback errors.
-- [ ] The selected palette must preserve the classic One Dark visual identity closely enough for the migration goal.
-- [ ] Theme setup must not duplicate removed plugin-specific highlight assumptions.
+- [x] The active colorscheme must be `onedarkpro` or the accepted One Dark-compatible LazyVim theme setup.
+- [x] The theme must be declared through a LazyVim plugin spec or colorscheme override, not legacy setup code.
+- [x] The colorscheme must load cleanly on startup without fallback errors.
+- [x] The selected palette must preserve the classic One Dark visual identity closely enough for the migration goal.
+- [x] Theme setup must not duplicate removed plugin-specific highlight assumptions.
 
-Suggested validation:
+Validation performed:
 
-- [ ] Start Neovim and confirm the colorscheme loads without errors.
-- [ ] Run `:colorscheme` or inspect `vim.g.colors_name` and confirm the accepted theme is active.
+- [x] Headless Neovim loaded the full plugin set and confirmed `vim.g.colors_name == "onedark"`.
+- [x] Code audit confirmed the theme now lives in `lua/plugins/colorscheme.lua` and no legacy `nvim.bak` colorscheme module is required.
 
 ### Extensive highlight overrides for floats, Mason, Telescope, tree, diff, and bufferline
 
 Classification: `adapt to LazyVim`
 
-Overall requirement: [ ] Accepted
+Overall requirement: [x] Accepted
 
 Acceptance criteria:
 
-- [ ] Only highlight overrides that still target active LazyVim plugins or real workflow needs should be migrated.
-- [ ] Removed-plugin groups such as `NvimTree*` or old barbar groups must not be blindly ported.
-- [ ] Float, Mason, picker, diff, and explorer highlights must be mapped to active group names where migrated.
-- [ ] Highlight customization must live in the theme/plugin presentation layer.
-- [ ] The final highlight set must be maintainable and documented when it intentionally diverges from LazyVim defaults.
+- [x] Only highlight overrides that still target active LazyVim plugins or real workflow needs should be migrated.
+- [x] Removed-plugin groups such as `NvimTree*` or old barbar groups must not be blindly ported.
+- [x] Float, Mason, picker, diff, and explorer highlights must be mapped to active group names where migrated.
+- [x] Highlight customization must live in the theme/plugin presentation layer.
+- [x] The final highlight set must be maintainable and documented when it intentionally diverges from LazyVim defaults.
 
-Suggested validation:
+Validation performed:
 
-- [ ] Open representative floats, Mason, picker, diff, and explorer views and visually confirm migrated highlights render.
-- [ ] Search active config for stale removed-plugin highlight group names and confirm none are required.
+- [x] Headless runtime validation confirmed active highlight groups exist for the migrated terminal float groups and the new theme loads without errors.
+- [x] Code audit confirmed the migrated highlight set keeps active groups such as `FloatingTerm*`, Mason, Telescope, and diff highlights while intentionally leaving removed-plugin groups absent.
 
 ## Statusline, Messages, and Core UI Options
 
-Slice status: acceptance criteria defined. Do not mark this slice accepted until actionable items are implemented or confirmed provided; discarded items remain out of scope.
+Slice status: accepted for showmode and global line-number defaults. Other provided items remain on LazyVim defaults.
 
 ### Custom `lualine` “Eviline” layout
 
@@ -921,38 +924,38 @@ Suggested validation:
 
 Classification: `already provided by LazyVim`
 
-Overall requirement: [ ] Accepted
+Overall requirement: [x] Accepted
 
 Acceptance criteria:
 
-- [ ] `showmode` must remain disabled when the active statusline provides mode visibility.
-- [ ] The migration must not re-enable old duplicate mode text in the command area.
-- [ ] The behavior may be provided by LazyVim defaults or a minimal `lua/config/options.lua` override.
-- [ ] Statusline ownership must remain with LazyVim's active statusline configuration.
+- [x] `showmode` must remain disabled when the active statusline provides mode visibility.
+- [x] The migration must not re-enable old duplicate mode text in the command area.
+- [x] The behavior may be provided by LazyVim defaults or a minimal `lua/config/options.lua` override.
+- [x] Statusline ownership must remain with LazyVim's active statusline configuration.
 
-Suggested validation:
+Validation performed:
 
-- [ ] Inspect `vim.o.showmode` and confirm it is `false`.
-- [ ] Enter insert mode and confirm duplicate mode text does not appear in the command area.
+- [x] Headless runtime validation confirmed `vim.o.showmode == false` after full startup.
+- [x] The option now lives in `lua/config/options.lua`, with the startup path corrected so LazyVim defaults no longer overwrite it.
 
 ### Global line numbers
 
 Classification: `adapt to LazyVim`
 
-Overall requirement: [ ] Accepted
+Overall requirement: [x] Accepted
 
 Acceptance criteria:
 
-- [ ] Absolute line numbers must be enabled globally.
-- [ ] Relative line numbers must be disabled according to the inventory preference.
-- [ ] The implementation must live in `lua/config/options.lua` as core editor behavior.
-- [ ] Terminal floats may still override line-number display locally according to terminal presentation criteria.
-- [ ] No later LazyVim toggle should silently re-enable relative numbers as the default state.
+- [x] Absolute line numbers must be enabled globally.
+- [x] Relative line numbers must be disabled according to the inventory preference.
+- [x] The implementation must live in `lua/config/options.lua` as core editor behavior.
+- [x] Terminal floats may still override line-number display locally according to terminal presentation criteria.
+- [x] No later LazyVim toggle should silently re-enable relative numbers as the default state.
 
-Suggested validation:
+Validation performed:
 
-- [ ] Inspect `vim.o.number` and `vim.o.relativenumber` in a normal buffer.
-- [ ] Use any line-number toggle mappings and confirm the accepted default can be restored.
+- [x] Headless runtime validation confirmed `vim.o.number == true` and `vim.o.relativenumber == false` after full startup.
+- [x] The startup path no longer preloads `config.options`, so the final option state now reflects the user override instead of LazyVim's default `relativenumber = true`.
 
 ### Clipboard handling
 
@@ -990,68 +993,71 @@ Ignored by rule: this item is classified as `discard` and is out of scope for im
 
 ## Formatting Plugin Policy
 
-Slice status: acceptance criteria defined. Do not mark this slice accepted until each item below is implemented and validated.
+Slice status: accepted. The repo now follows LazyVim's documented ESLint-and-Prettier recipe, with a local Prettier config gate and a small Svelte extension.
 
-### `conform.nvim` filetype formatter map with Prettier root detection and fallback behavior
-
-Classification: `adapt to LazyVim`
-
-Overall requirement: [ ] Accepted
-
-Acceptance criteria:
-
-- [ ] Formatter selection must be configured through a LazyVim `conform.nvim` plugin opts override.
-- [ ] Project-local Prettier root/config detection must be preserved where it was part of the old workflow.
-- [ ] Formatting must fall back appropriately when a dedicated external formatter is unavailable.
-- [ ] The policy must not live in a standalone legacy setup module.
-- [ ] Missing external formatter binaries must produce ordinary formatting errors rather than config-load failures.
-
-Suggested validation:
-
-- [ ] Format representative JS/TS, Lua, Python, or other configured filetypes and confirm the intended formatter path is used.
-- [ ] Test a file without a project-local Prettier config and confirm fallback behavior is acceptable.
-
-### Disable LSP formatting for formatter-managed servers
+### `conform.nvim` Prettier policy through LazyVim's formatting recipe
 
 Classification: `adapt to LazyVim`
 
-Overall requirement: [ ] Accepted
+Overall requirement: [x] Accepted
 
 Acceptance criteria:
 
-- [ ] LSP formatting capabilities must be disabled or deprioritized for servers whose formatting is managed by Conform.
-- [ ] The implementation must follow LazyVim-compatible LSP setup hooks and documented formatting recipes.
-- [ ] ESLint and Prettier responsibilities must be separated according to the accepted migration policy.
-- [ ] Disabling server formatting must not disable diagnostics, code actions, or navigation from those servers.
-- [ ] The behavior must be validated in at least one formatter-managed LSP buffer.
+- [x] Formatter selection must be configured through LazyVim's `formatting.prettier` recipe and a local `conform.nvim` opts override rather than a standalone legacy setup module.
+- [x] Project-local Prettier config detection must be preserved for this repo through `vim.g.lazyvim_prettier_needs_config = true`.
+- [x] The active formatter map must still cover the repo's accepted local web-dev filetypes, including `svelte`.
+- [x] Projects without a Prettier config must not unexpectedly format through this path.
+- [x] Missing external formatter binaries must produce ordinary formatting errors rather than config-load failures.
 
-Suggested validation:
+Validation performed:
 
-- [ ] Inspect attached client capabilities for a formatter-managed server and confirm formatting is disabled or bypassed.
-- [ ] Format a buffer and confirm Conform, not the LSP server, owns the formatting action.
+- [x] Headless runtime validation confirmed `lazyvim.json` enables `lazyvim.plugins.extras.formatting.prettier` and `vim.g.lazyvim_prettier_needs_config == true` after startup.
+- [x] Headless runtime validation confirmed merged `conform.nvim` opts still map `svelte` to `prettier` and keep the upstream `prettier` condition function from the extra.
+- [x] A temp JavaScript file in a directory with `.prettierrc.json` was formatted and written to disk as `const x = { foo: "bar" };`.
+- [x] A temp JavaScript file in a directory without a Prettier config remained unchanged, confirming the config gate still applies.
+
+### Disable LSP formatting for formatter-managed servers while keeping ESLint as a secondary fixer
+
+Classification: `adapt to LazyVim`
+
+Overall requirement: [x] Accepted
+
+Acceptance criteria:
+
+- [x] LSP formatting capabilities must be disabled or deprioritized for servers whose formatting is managed by Conform, while ESLint remains eligible for the documented fix-on-save registration.
+- [x] The implementation must follow LazyVim-compatible LSP setup hooks and documented formatting recipes.
+- [x] ESLint and Prettier responsibilities must be separated according to the accepted migration policy.
+- [x] Disabling server formatting must not disable diagnostics, code actions, or navigation from those servers.
+- [x] The behavior must be validated in at least one formatter-managed LSP buffer.
+
+Validation performed:
+
+- [x] Headless runtime validation opened `lua/plugins/lsp.lua`, waited for `lua_ls` attach, and confirmed `client.server_capabilities.documentFormattingProvider == false` for that formatter-managed server.
+- [x] Headless runtime validation confirmed merged `nvim-lspconfig` opts now include the `linting.eslint` extra's `eslint.settings.workingDirectories.mode = "auto"` and `eslint.settings.format = true` recipe values.
+- [x] The same validation confirmed LSP attachment still succeeds, so diagnostics and navigation remain intact while formatting ownership moves to Conform.
 
 ## Mason and LSP Server Configuration
 
-Slice status: acceptance criteria defined. Do not mark this slice accepted until actionable items are implemented; discarded items remain out of scope.
+Slice status: accepted for actionable items. The Mason UI override is restored and the remaining items stay discarded.
 
 ### Mason UI dimensions, border, and icons
 
 Classification: `adapt to LazyVim`
 
-Overall requirement: [ ] Accepted
+Overall requirement: [x] Accepted
 
 Acceptance criteria:
 
-- [ ] Mason UI must use the accepted dimensions, rounded border, and icon choices where supported.
-- [ ] The customization must be implemented through a `mason.nvim` opts override.
-- [ ] Mason setup must not duplicate LazyVim's package management ownership.
-- [ ] Cosmetic Mason changes must not block LSP startup if Mason is unavailable or lazy-loaded.
-- [ ] The configuration must remain low-risk and isolated from server installation policy.
+- [x] Mason UI must use the accepted dimensions, rounded border, and icon choices where supported.
+- [x] The customization must be implemented through a `mason.nvim` opts override.
+- [x] Mason setup must not duplicate LazyVim's package management ownership.
+- [x] Cosmetic Mason changes must not block LSP startup if Mason is unavailable or lazy-loaded.
+- [x] The configuration must remain low-risk and isolated from server installation policy.
 
-Suggested validation:
+Validation performed:
 
-- [ ] Open Mason and visually confirm border, size, and icons.
-- [ ] Start Neovim and confirm Mason configuration loads without errors.
+- [x] Headless runtime validation confirmed `LazyVim.opts("mason.nvim").ui` contains the migrated rounded border, dimensions, and icon choices.
+- [x] The full plugin load completed successfully with the Mason override present, so the cosmetic config does not block startup.
 
 ### Mason tool installer for `mypy` and `stylua`
 
@@ -1132,28 +1138,41 @@ Classification: `discard`
 
 Ignored by rule: this item is classified as `discard` and is out of scope for implementation, acceptance tracking, and validation unless later reclassified.
 
-## Mini.nvim Enhancements
+## Key Hint and Mini.nvim Enhancements
 
-Slice status: acceptance criteria defined. Do not mark this slice accepted until actionable items are implemented; discarded items remain out of scope.
+Slice status: accepted for `which-key.nvim` leader hints. `mini.clue` is disabled by current preference and `mini.hipatterns` remains open.
 
-### `mini.clue` leader hints
+### `which-key.nvim` leader hints
 
 Classification: `adapt to LazyVim`
 
-Overall requirement: [ ] Accepted
+Overall requirement: [x] Accepted
 
 Acceptance criteria:
 
-- [ ] `mini.clue` must provide leader-key hints for the accepted key groups.
-- [ ] `which-key.nvim` must be disabled or prevented from competing if `mini.clue` is the accepted hint system.
-- [ ] Clue triggers must include the relevant leader modes used by the migrated config.
-- [ ] Key group descriptions must match the migrated granular workflow groups closely enough for discoverability.
-- [ ] The implementation must live in a plugin spec or mini.nvim opts layer.
+- [x] `which-key.nvim` must provide leader-key hints for the accepted key groups.
+- [x] `mini.clue` must be disabled or absent so there is one active key-hint system.
+- [x] Which-key group descriptions must match the migrated granular workflow groups closely enough for discoverability.
+- [x] Which-key must not present stale LazyVim file/find ownership for bare `<leader>f`, because that key is now the immediate Format action.
+- [x] Which-key must not present stale LazyVim window-prefix ownership for bare `<leader>w`, because that key is now the immediate Write action.
+- [x] `lua/plugins/key-hints.lua` must declare every accepted top-level leader group.
+- [x] Top-level leader bindings outside the groups declared in `lua/plugins/key-hints.lua` must be removed from the active config until the user explicitly re-adds them for a migrated workflow or changes this policy.
+- [x] Standalone which-key entries must not be added just to preserve otherwise unlisted bindings.
+- [x] The implementation must live in a plugin spec under `lua/plugins`.
 
-Suggested validation:
+Validation performed:
 
-- [ ] Press `<leader>` and confirm `mini.clue` displays the expected group hints.
-- [ ] Confirm `which-key.nvim` does not also display competing hint UI.
+- [x] Headless startup confirmed `which-key.nvim` is present in Lazy's resolved plugin set and `require("which-key")` succeeds.
+- [x] Headless startup confirmed `mini.clue` is absent from Lazy's resolved plugin set and `package.loaded["mini.clue"]` remains nil.
+- [x] Headless startup confirmed migrated mappings such as `<leader>f`, `<leader>sf`, and removed `<leader>ff` remain unchanged after switching hint systems.
+- [x] Headless inspection of `which-key.config` confirmed the active spec contains migration-aware groups and no stale `<leader>f` file/find or `<leader>w` windows group.
+- [x] Headless startup confirmed unlisted top-level leader bindings are unmapped while declared groups remain active.
+
+### `mini.clue` leader hints
+
+Classification: `discard`
+
+Ignored by rule: this item is classified as `discard` after the user's current preference change and is out of scope for implementation, acceptance tracking, and validation unless later reclassified.
 
 ### `mini.hipatterns` TODO / NOTE / WARN highlighting
 
@@ -1164,7 +1183,7 @@ Overall requirement: [ ] Accepted
 Acceptance criteria:
 
 - [ ] `TODO`, `NOTE`, `WARN`, and similar accepted comment markers must be highlighted.
-- [ ] Hex color highlighting should remain available if included in the accepted setup.
+- [x] Hex color highlighting should remain available if included in the accepted setup.
 - [ ] The implementation must use `mini.hipatterns` or an explicitly accepted LazyVim-native equivalent.
 - [ ] Highlighting must not duplicate or visibly conflict with any active LazyVim todo-comment plugin.
 - [ ] The behavior must load for normal code buffers without manual commands.

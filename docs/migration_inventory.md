@@ -11,6 +11,7 @@ This document is the authoritative migration reference for moving behavior from 
 - Migration rule: prefer existing LazyVim defaults unless the old config captures a deliberate workflow advantage
 - Migration rule: avoid porting plugin-specific bindings when the underlying plugin no longer exists in LazyVim but use a LazyVim equivalent workflow always
 - Migration rule: any inventory item classified as `discard` is out of scope for migration and must be ignored entirely unless it is later explicitly reclassified
+- Migration rule: `lua/plugins/key-hints.lua` is the current allowlist for leader binding groups; active top-level leader bindings outside those listed groups should be removed until the user explicitly re-adds them for a migrated workflow or changes this policy. Do not add which-key entries just to justify keeping an otherwise unlisted binding.
 
 ## Workflow Findings and Migration Specs
 
@@ -51,7 +52,7 @@ Items marked `discard` are intentionally excluded from implementation, acceptanc
 
 | Item | Classification | Original source | Reasoning | LazyVim equivalent | Risks / compatibility concerns |
 | --- | --- | --- | --- | --- | --- |
-| Search suite under `<leader>s*`, `<leader>/`, and `<leader>sn` | mostly already provided by LazyVim | `nvim.bak/lua/custom/keymaps.lua` | The old search surface is conceptually aligned with LazyVim: help, keymaps, files, grep, diagnostics, recent files, current buffer, and config search. Most of this should stay on LazyVim defaults. | LazyVim picker mappings backed by `snacks.nvim` and optional Telescope | The exact picker backend and hidden-file behavior differ from the old setup so keep setup found in LazyVim but migrate mappings to LazyVim existing equivalent and remove similar bindings from LazyVim with `vim.keymap.del`. |
+| Search suite under `<leader>s*`, `<leader>/`, and `<leader>sn` | mostly already provided by LazyVim | `nvim.bak/lua/custom/keymaps.lua` | The old search surface is conceptually aligned with LazyVim: help, keymaps, files, grep, diagnostics, recent files, current buffer, and config search. Most of this should stay on LazyVim defaults. | LazyVim picker mappings backed by the active Telescope extra, with migration aliases in `lua/plugins/picker.lua` | Telescope's `<leader>f*` file-prefix mappings conflict with the accepted bare `<leader>f` Format action, so they are disabled and old search habits are reachable under `<leader>s*`, `<leader>/`, `<leader><space>`, and `<leader>,`. |
 
 ### Escape Key Behavior
 
@@ -157,14 +158,14 @@ Items marked `discard` are intentionally excluded from implementation, acceptanc
 | Item | Classification | Original source | Reasoning | LazyVim equivalent | Risks / compatibility concerns |
 | --- | --- | --- | --- | --- | --- |
 | Copilot suggestion auto-trigger and hide during completion | adapt to LazyVim | `nvim.bak/lua/custom/configs/copilot-setup.lua` | This is custom coordination logic between Copilot and `blink.cmp`, not a default LazyVim behavior. | `copilot.lua` plus `blink.cmp` event hooks | Event names and Copilot internals can change across plugin versions and LazyVim defaults, proceed with caution. |
-| Disable Copilot on buffers whose names match `.env` or `.env.*` | adapt to LazyVim | `nvim.bak/lua/custom/configs/copilot-setup.lua` | This is a deliberate choice to avoid suggesting completions in environment files or exposing environment secrets to AI copilot. | `copilot.lua` buffer filter hooks | None |
+| Disable Copilot on buffers whose names match `.env` or `.env.*` | adapt to LazyVim | `nvim.bak/lua/custom/configs/copilot-setup.lua` | This is a deliberate choice to avoid suggesting completions in environment files or exposing environment secrets to AI copilot. | `copilot.lua` `should_attach` wrapper in `lua/plugins/copilot.lua` | None |
 
 ### Theme and Highlight Behavior
 
 | Item | Classification | Original source | Reasoning | LazyVim equivalent | Risks / compatibility concerns |
 | --- | --- | --- | --- | --- | --- |
-| `onedarkpro` theme with a classic One Dark palette | adapt to LazyVim | `nvim.bak/lua/custom/configs/colorscheme.lua`, `nvim.bak/init.lua` | The color identity is clearly deliberate, but the migration should use a LazyVim plugin spec instead of porting raw setup calls blindly. | LazyVim colorscheme override with `onedarkpro.nvim` | Large highlight override set may become expensive to maintain so port with LazyVim compatibility in mind. |
-| Extensive highlight overrides for floats, Mason, Telescope, tree, diff, and bufferline | adapt to LazyVim | `nvim.bak/lua/custom/configs/colorscheme.lua` | Some of these should survive, but many target plugins or highlight groups that are no longer part of the LazyVim baseline. | Theme-specific highlight overrides in a dedicated plugin spec | `NvimTree*` and `Buffer*` groups will not map cleanly if `nvim-tree` and `barbar` are not migrated so avoid porting those migrations and instead focus on LazyVim-native components. |
+| `onedarkpro` theme with a classic One Dark palette | adapt to LazyVim | `nvim.bak/lua/custom/configs/colorscheme.lua`, `nvim.bak/init.lua` | The color identity is clearly deliberate, but the migration should use a LazyVim plugin spec instead of porting raw setup calls blindly. | LazyVim colorscheme override with `onedarkpro.nvim` in `lua/plugins/colorscheme.lua` | Large highlight override set may become expensive to maintain so port with LazyVim compatibility in mind. |
+| Extensive highlight overrides for floats, Mason, Telescope, tree, diff, and bufferline | adapt to LazyVim | `nvim.bak/lua/custom/configs/colorscheme.lua` | Some of these should survive, but many target plugins or highlight groups that are no longer part of the LazyVim baseline. | Theme-specific highlight overrides in `lua/plugins/colorscheme.lua` | Only active LazyVim-native groups such as `FloatingTerm*`, Mason, Telescope, and diff highlights should be kept; removed-plugin groups remain intentionally absent. |
 
 ### Statusline, Messages, and Core UI Options
 
@@ -173,7 +174,7 @@ Items marked `discard` are intentionally excluded from implementation, acceptanc
 | Custom `lualine` “Eviline” layout | discard | `nvim.bak/lua/custom/configs/statusline.lua` | The old statusline is highly customized and visually intentional, but `lualine` is already present in LazyVim with good customizations. Ignore existing custom config from backup entirely. | `lualine.nvim` opts override | High effort for cosmetic value; can hide more important migration work, avoid like the plague. |
 | `noice.nvim` and other old custom prettification techniques | already provided by LazyVim | `nvim.bak/lua/custom/configs/noice.lua` | LazyVim already ships  with pretty notifications  and other completions so avoid modifications to this setup entirely. | `noice.nvim` opts override and `notify` setup | None |
 | Hide `showmode` and rely on statusline | already provided by LazyVim | `nvim.bak/init.lua`, `nvim.bak/lua/custom/configs/statusline.lua` | This is standard once a statusline is active. | LazyVim default options | None. |
-| Global line numbers | adapt to LazyVim | `nvim.bak/init.lua` | Do not use relative line numbers.. | LazyVim default options plus optional `lua/config/options.lua` overrides | N/A |
+| Global line numbers | adapt to LazyVim | `nvim.bak/init.lua` | Do not use relative line numbers.. | LazyVim default options plus `lua/config/options.lua` overrides | Avoid preloading `config.options` from `lua/config/lazy.lua`, because that caches user options too early and lets LazyVim defaults restore `relativenumber`. |
 | Clipboard handling | already provided by LazyVim | `nvim.bak/init.lua` | Ignore. | LazyVim default options plus optional `lua/config/options.lua` overrides | N/A |
 
 ### Autocommands and Filetype Defaults
@@ -187,14 +188,14 @@ Items marked `discard` are intentionally excluded from implementation, acceptanc
 
 | Item | Classification | Original source | Reasoning | LazyVim equivalent | Risks / compatibility concerns |
 | --- | --- | --- | --- | --- | --- |
-| `conform.nvim` filetype formatter map with Prettier root detection and fallback behavior | adapt to LazyVim | `nvim.bak/lua/custom/configs/conform.lua`, `nvim.bak/lua/custom/keymaps.lua` | The formatting policy is real project behavior and should move into a LazyVim plugin spec instead of a standalone setup module. | `conform.nvim` opts override in `lua/plugins/*.lua` | Requires external formatter binaries and project-local Prettier config roots to preserve the old behavior exactly. |
-| Disable LSP formatting for formatter-managed servers | adapt to LazyVim | `nvim.bak/lua/custom/lsp.lua` | Specifically need to handle ESLint and Prettier setups properly using the recommendations from LazyVim's documentation at <https://www.lazyvim.org/configuration/recipes#use-eslint-for-fix-on-save-and-prettier-for-formatting> and <https://www.lazyvim.org/configuration/recipes#add-eslint-and-use-it-for-formatting>. | LazyVim `nvim-lspconfig` server setup hooks | Needs care so server capabilities are changed after attachment. |
+| `conform.nvim` Prettier policy through LazyVim's formatting recipe | adapt to LazyVim | `nvim.bak/lua/custom/configs/conform.lua`, `nvim.bak/lua/custom/keymaps.lua` | LazyVim's documented recommendation for web projects is the `formatting.prettier` extra, not a hand-rolled `prettierd` fallback chain. This repo keeps that recipe, opts into `vim.g.lazyvim_prettier_needs_config = true`, and extends it locally for `svelte`. | LazyVim `formatting.prettier` extra plus a small `lua/plugins/formatting.lua` opts override | Requires the `prettier` binary and an explicit Prettier config for repo-local JS/TS formatting; projects without a Prettier config intentionally do not auto-format through this path. |
+| Disable LSP formatting for formatter-managed servers while keeping ESLint as a secondary fixer | adapt to LazyVim | `nvim.bak/lua/custom/lsp.lua` | LazyVim's documented web-dev recipe separates responsibilities: Prettier owns formatting and ESLint owns lint fixes on save. That means formatter-managed servers should still lose formatting capability, but ESLint must stay format-capable so the `linting.eslint` extra can register it as a secondary formatter. | LazyVim `linting.eslint` extra plus local `nvim-lspconfig` `LspAttach` capability override in `lua/plugins/lsp.lua` | Needs care so ESLint remains registered for fixes while other formatter-managed servers still defer to Conform. |
 
 ### Mason and LSP Server Configuration
 
 | Item | Classification | Original source | Reasoning | LazyVim equivalent | Risks / compatibility concerns |
 | --- | --- | --- | --- | --- | --- |
-| Mason UI dimensions, border, and icons | adapt to LazyVim | `nvim.bak/lua/custom/lsp.lua` | This is low-risk visual customization that should be reintroduced but not dwelled on if complex. | `mason.nvim` opts override | Mostly cosmetic. |
+| Mason UI dimensions, border, and icons | adapt to LazyVim | `nvim.bak/lua/custom/lsp.lua` | This is low-risk visual customization that should be reintroduced but not dwelled on if complex. | `mason.nvim` opts override in `lua/plugins/mason.lua` | Mostly cosmetic. |
 | Mason tool installer for `mypy` and `stylua` | discard | `nvim.bak/lua/custom/lsp.lua` | Lsp/tool management should be automatic in LazyVim so ignore further mason configurations. | `mason.nvim` / `mason-tool-installer.nvim` plugin opts | None |
 | Server-specific LSP settings for `lua_ls`, `pyright`, `eslint`, `ts_ls`, `ruff`, `svelte`, etc. | discard | `nvim.bak/lua/custom/lsp.lua` | These are substantive behavior decisions resulting from project-specific needs and should be reconsidered in the context of LazyVim's defaults. | LazyVim `nvim-lspconfig` opts and language extras | Server names, defaults, and LazyVim extras can differ from the old setup. |
 | `svelte` JS/TS change notification autocmd | discard | `nvim.bak/lua/custom/lsp.lua` | Ignore. | `LspAttach` hook in LazyVim LSP config | N/A |
@@ -220,12 +221,13 @@ Items marked `discard` are intentionally excluded from implementation, acceptanc
 | Runtime `nvim-treesitter.parsers.ft_to_lang` compatibility shim | discard | `nvim.bak/lua/custom/configs/telescope-config.lua` | This is a defensive workaround for an older parser API mismatch and should not be carried forward without reproducing the bug. | None | High chance of preserving obsolete compatibility code. |
 | Treesitter parser install list and auto-start-on-filetype logic | discard | `nvim.bak/lua/custom/configs/treesitter-config.lua` | Parser coverage matters; custom bootstrapping logic does not so there is no need to install parsers manually when this should be handled automatically. | `nvim-treesitter` opts override or LazyVim language extras | Old imperative install logic is unnecessary in LazyVim. |
 
-### Mini.nvim Enhancements
+### Key Hint and Mini.nvim Enhancements
 
 | Item | Classification | Original source | Reasoning | LazyVim equivalent | Risks / compatibility concerns |
 | --- | --- | --- | --- | --- | --- |
-| `mini.clue` leader hints | adapt to LazyVim | `nvim.bak/lua/custom/plugins.lua` | LazyVim uses `which-key.nvim` to surface key groups but I want to use mini.clue instead. | `mini.clue` plugin spec or with mini.nvim | No need to keep both systems, ensure only mini.clue remains. |
-| `mini.hipatterns` TODO / NOTE / WARN highlighting | adapt to LazyVim | `nvim.bak/lua/custom/plugins.lua` | This is a nice enhancement to match what I actually use in my todo-esque code comments. | `mini.hipatterns` plugin spec or equivalent highlight tool | Low risk, low priority but definitely a need. |
+| `which-key.nvim` leader hints | adapt to LazyVim | `nvim.bak/lua/custom/keymaps.lua`, LazyVim default `which-key.nvim` spec | User reversed the earlier mini.clue decision and now wants which-key as the sole hint system. Use LazyVim's default hint plugin with local group overrides for migrated key ownership. The key-hints file is also the allowlist for leader groups during migration. | `which-key.nvim` plugin spec in `lua/plugins/key-hints.lua`, with unlisted top-level leader defaults removed in `lua/config/keymaps.lua` | Do not keep mini.clue active. Do not add standalone which-key entries only to preserve a binding. Any future top-level leader binding outside the listed groups should stay removed until the user explicitly re-adds it for a migrated workflow or changes this policy. |
+| `mini.clue` leader hints | discard | `nvim.bak/lua/custom/plugins.lua` | User explicitly no longer wants mini.clue for key hints. | None | Keep disabled so it cannot compete with which-key. |
+| `mini.hipatterns` TODO / NOTE / WARN highlighting | adapt to LazyVim | `nvim.bak/lua/custom/plugins.lua` | This is a nice enhancement to match what I actually use in my todo-esque code comments. | `mini.hipatterns` plugin spec or equivalent highlight tool | Hex-color highlighting is migrated first in `lua/plugins/mini.lua`; comment-marker ownership still needs a final decision alongside the existing `todo-comments.nvim` defaults. |
 | `mini.comment`, `mini.cursorword`, `mini.bufremove`, `mini.pairs` | discard | `nvim.bak/lua/custom/plugins.lua` | These are quality-of-life plugins which LazyVim handles for us in default options. | LazyVim defaults and optional mini.nvim specs | Risk of duplicating behavior with existing LazyVim plugins. |
 
 ### Snacks.nvim Baseline Behavior

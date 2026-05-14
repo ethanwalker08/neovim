@@ -22,8 +22,27 @@ del("n", "<leader>qq")
 del("n", "<leader>w")
 del("n", "<leader>e")
 del("n", "<leader>E")
+del("n", "<leader><space>")
+del("n", "<leader>,")
+del("n", "<leader>/")
+del("n", "<leader>cd")
 del("n", "<leader>gg")
 del("n", "<leader>gG")
+del("n", "<leader>sG")
+del({ "n", "t" }, "<C-/>")
+del_all("n", {
+  "<leader>.",
+  "<leader>:",
+  "<leader>?",
+  "<leader>S",
+  "<leader>bP",
+  "<leader>bj",
+  "<leader>bl",
+  "<leader>bp",
+  "<leader>br",
+  "<leader>n",
+})
+del({ "n", "t" }, "<C-_>")
 del_all("n", {
   "<leader>f",
   "<leader>fb",
@@ -42,17 +61,17 @@ del_all("n", {
   "<leader>fT",
 })
 
-vim.keymap.set("n", "<leader>w", "<cmd>write<cr>", { desc = "Write Buffer", nowait = true })
-vim.keymap.set("n", "<leader>qq", "<cmd>qa<cr>", { desc = "Quit All" })
+vim.keymap.set("n", "<leader>w", "<cmd>write<cr>", { desc = "[W]rite Buffer", nowait = true })
+vim.keymap.set("n", "<leader>qq", "<cmd>qa<cr>", { desc = "[Q]uit Neovim" })
 vim.keymap.set("n", "<leader>qb", function()
   Snacks.bufdelete()
-end, { desc = "Delete Buffer" })
+end, { desc = "[Q]uit [B]uffer" })
 vim.keymap.set("n", "<leader>e", function()
   Snacks.explorer({ cwd = LazyVim.root() })
-end, { desc = "Explorer" })
-vim.keymap.set("n", "<leader>E", function()
-  Snacks.explorer()
-end, { desc = "Explorer (cwd)" })
+end, { desc = "[E]xplorer" })
+vim.keymap.set({ "n", "x" }, "<leader>f", function()
+  LazyVim.format({ force = true })
+end, { desc = "[F]ormat", nowait = true })
 vim.keymap.set("n", "<leader>lg", function()
   if vim.fn.executable("lazygit") == 0 then
     vim.notify("lazygit is not installed", vim.log.levels.ERROR, { title = "LazyGit" })
@@ -61,14 +80,3 @@ vim.keymap.set("n", "<leader>lg", function()
 
   Snacks.lazygit({ cwd = LazyVim.root.git() })
 end, { desc = "LazyGit" })
-vim.keymap.set({ "n", "x" }, "<leader>f", function()
-  LazyVim.format({ force = true })
-end, { desc = "Format", nowait = true })
-
-pcall(function()
-  require("which-key").add({
-    { "<leader>e", desc = "Explorer" },
-    { "<leader>f", desc = "Format" },
-    { "<leader>lg", desc = "LazyGit" },
-  })
-end)
