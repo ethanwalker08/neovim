@@ -121,15 +121,6 @@ This repo no longer uses the backup layout from `nvim.bak/` such as `vim.pack` o
 - Blink's Copilot completion source is disabled. Copilot is used here as inline suggestion support, not as a completion-menu source.
 - The active colorscheme is a One Dark variant implemented through `onedarkpro.nvim`.
 
-## Migration Docs
-
-If you are continuing the migration from `nvim.bak/`, start with:
-
-- `docs/lazyvim_architecture.md`
-- `docs/migration_inventory.md`
-- `docs/workflow_acceptance.md`
-- `docs/migration_log.md`
-
 ## License
 
 MIT. See `LICENSE`.
