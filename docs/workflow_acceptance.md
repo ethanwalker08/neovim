@@ -1155,9 +1155,11 @@ Acceptance criteria:
 - [x] Which-key group descriptions must match the migrated granular workflow groups closely enough for discoverability.
 - [x] Which-key must not present stale LazyVim file/find ownership for bare `<leader>f`, because that key is now the immediate Format action.
 - [x] Which-key must not present stale LazyVim window-prefix ownership for bare `<leader>w`, because that key is now the immediate Write action.
+- [x] Which-key duplicate and overlap checks must report no duplicate mappings and no overlapping keymaps for the accepted migrated top-level leader ownership.
 - [x] `lua/plugins/key-hints.lua` must declare every accepted top-level leader group.
 - [x] Top-level leader bindings outside the groups declared in `lua/plugins/key-hints.lua` must be removed from the active config until the user explicitly re-adds them for a migrated workflow or changes this policy.
 - [x] Standalone which-key entries must not be added just to preserve otherwise unlisted bindings.
+- [x] The top-level `<leader>l` key must remain a prefix-only LazyGit namespace and must not fall back to LazyVim's default `:Lazy` action after `User VeryLazy` keymaps load.
 - [x] The implementation must live in a plugin spec under `lua/plugins`.
 
 Validation performed:
@@ -1167,6 +1169,8 @@ Validation performed:
 - [x] Headless startup confirmed migrated mappings such as `<leader>f`, `<leader>sf`, and removed `<leader>ff` remain unchanged after switching hint systems.
 - [x] Headless inspection of `which-key.config` confirmed the active spec contains migration-aware groups and no stale `<leader>f` file/find or `<leader>w` windows group.
 - [x] Headless startup confirmed unlisted top-level leader bindings are unmapped while declared groups remain active.
+- [x] Headless startup after `User VeryLazy` confirmed `<leader>l` resolves to `<Nop>` with the migrated LazyGit description instead of LazyVim's default `:Lazy` mapping.
+- [x] Headless Neovim intercepted `require("which-key.health").check()` and confirmed the resolved config reports no overlapping keymaps and no duplicate mappings.
 
 ### `mini.clue` leader hints
 

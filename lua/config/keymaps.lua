@@ -28,6 +28,7 @@ del("n", "<leader>/")
 del("n", "<leader>cd")
 del("n", "<leader>gg")
 del("n", "<leader>gG")
+del("n", "<leader>l")
 del("n", "<leader>sG")
 del({ "n", "t" }, "<C-/>")
 del_all("n", {
@@ -59,6 +60,15 @@ del_all("n", {
   "<leader>fR",
   "<leader>ft",
   "<leader>fT",
+})
+
+vim.api.nvim_create_autocmd("User", {
+  pattern = "VeryLazy",
+  once = true,
+  callback = function()
+    del("n", "<leader>l")
+    vim.keymap.set("n", "<leader>l", "<Nop>", { desc = "[L]azygit" })
+  end,
 })
 
 vim.keymap.set("n", "<leader>w", "<cmd>write<cr>", { desc = "[W]rite Buffer", nowait = true })

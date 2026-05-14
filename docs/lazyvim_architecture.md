@@ -35,7 +35,7 @@ This repository is close to the LazyVim starter shape, but it is not a pristine 
 - `lua/plugins/picker.lua` overrides Telescope and Noice key ownership so search workflows stay under `<leader>s*` while bare `<leader>f` remains Format.
 - `lua/plugins/lsp.lua` overrides `nvim-lspconfig` key ownership for migrated leader-based LSP navigation and diagnostic float styling while leaving ESLint formatting available for LazyVim's documented fix-on-save recipe.
 - `lua/config/options.lua` sets `vim.g.lazyvim_prettier_needs_config = true`, so the Prettier extra only runs when a project-local Prettier config exists.
-- `lua/plugins/key-hints.lua` disables `nvim-mini/mini.clue` and extends LazyVim's default `which-key.nvim` spec with migration-aware group labels.
+- `lua/plugins/key-hints.lua` disables `nvim-mini/mini.clue`, filters conflicting top-level LazyVim `which-key.nvim` spec entries, and then appends migration-aware group labels.
 - `lua/config/keymaps.lua` and `lua/config/options.lua` already contain migration overrides, so they should not be treated as upstream defaults.
 - `lua/plugins/example.lua` has been removed from the active workspace.
 
@@ -130,6 +130,8 @@ Current migration note: `lua/config/keymaps.lua` clears LazyVim's global `<leade
 
 Current migration note: `lua/plugins/key-hints.lua` is the allowlist for top-level leader groups and accepted immediate bindings during migration. If a top-level leader binding is outside those listed groups and immediate bindings, remove it from the active config for now instead of adding a standalone which-key entry to keep it. `lua/config/keymaps.lua` currently prunes unlisted top-level defaults such as `<leader><space>`, `<leader>,`, `<leader>/`, `<leader>.`, `<leader>:`, `<leader>?`, `<leader>S`, `<leader>b*`, and `<leader>n`, while keeping accepted immediate bindings on `<leader>e`, `<leader>E`, `<leader>f`, and `<leader>w`.
 
+Current migration note: LazyVim also loads its own default keymaps on `User VeryLazy`. If a migrated workflow needs a top-level prefix to remain prefix-only after startup, such as `<leader>l` for the LazyGit namespace, re-own that prefix on or after `VeryLazy`; an early `vim.keymap.del()` alone can be restored by LazyVim later in startup.
+
 Customization guidance:
 
 - Use `vim.keymap.del` to remove a LazyVim global default before redefining it.
@@ -187,7 +189,7 @@ Guidance from the LazyVim plugin docs:
 - Use `opts = function(_, opts) ... end` when you need to mutate an existing list or derive values from existing defaults.
 - Prefer `keys = { ... }` for plugin-owned keymaps; disable a plugin key with `{ lhs, false }` and include the exact same mode when the original key is not normal-mode only.
 - For LSP keymaps, use the `nvim-lspconfig` server config key list, normally `opts.servers["*"].keys`, because LazyVim documents LSP maps as server configuration rather than ordinary global maps.
-- If a plugin declares `opts_extend` for a list-like option such as `which-key.nvim`'s `spec`, append local entries instead of assigning the whole list. Use which-key's `hidden` or a later replacement entry for stale groups instead of replacing LazyVim's whole spec.
+- If a plugin declares `opts_extend` for a list-like option such as `which-key.nvim`'s `spec`, append local entries instead of assigning the whole list. When re-owning the same top-level lhs that LazyVim already declares, filter the inherited `opts.spec` entries first; appending a second entry for the same lhs leaves duplicate which-key registrations. Avoid declaring the same lhs in both `x` and `v`, because `v` already covers visual mode and duplicates the resolved hint entry.
 
 ### Standard customization patterns
 
