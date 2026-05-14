@@ -1,48 +1,126 @@
-# My Personal Neovim Configuration for Natively Running Neovim on any system 
+# Personal LazyVim Neovim Config
 
-A complete Neovim configuration that works out right after installing neovim on any system with a nerd font.
+This repository is my active Neovim setup, built on top of [LazyVim](https://github.com/LazyVim/LazyVim) and `lazy.nvim`.
 
-## 🎯 Quick Start
+The old standalone config still lives in `nvim.bak/` as a migration reference, but the active configuration is the repo root. Not every old behavior is being carried forward unchanged. The migration docs in `docs/` track what has been preserved, adapted, or intentionally dropped.
 
-### VSCode Setup
-**If you want to use my config inside VS Code instead of through the terminal only, switch to the `windows-vscode-with-neovim` branch via git to use the config tailored for using Neovim inside VSCode**
+## What This Repo Contains
 
-### To use Neovim with this config in your terminal
+- A LazyVim-based Neovim config with local overrides for theme, completion, Copilot, formatting, keymaps, terminal workflows, LSP navigation, and key hints.
+- `leader` set to `<Space>`.
+- `which-key.nvim` as the active key-hint system.
+- LazyVim's `vscode` extra already enabled, so there is no separate VS Code branch for this setup.
+- `nvim.bak/` kept in-tree only as a source of truth during migration.
 
-Just type `nvim` in your terminal - everything works automatically!
+## Quick Start
 
-## 🔑 Using Key Bindings
+Clone or link this repository to `~/.config/nvim`, then start Neovim:
 
-- In neovim, the `leader` key is defined per config and allows you to set custom commands after pressing it, most times it's set to the space bar key so that is what this config does too.
-    - When you are in `n` (normal), clicking the space bar will show a menu plugin that shows you what options you have for commands. Commands may have subcommands after that too, so for example if you type 'space', 'c', 'a' sequentially, the 'space' initiates a command, then the 'c' means you want to do a 'code' type thing using your LSP, and the 'a' part specifies you want to see the code actions possible for the symbol under your cursor.
+```bash
+git clone <repo> ~/.config/nvim
+nvim
+```
 
-## 🔧 Configuration
+On first launch, `lazy.nvim` bootstraps itself automatically and installs plugins from the pinned lockfile.
 
-- If you want to change anything in this config for your own setup, delete the `.git` folder from this configuration on your machine and init your own git repo for your config.
-- Plugin declarations live in `lua/custom/plugins.lua` and use Neovim 0.12's native `vim.pack` package manager.
-- Add a plugin by appending its Git URL (or a spec table with `src`, `version`, `branch`, or `build`) to the `PLUGINS` table in `lua/custom/plugins.lua`.
-- Remove a plugin by deleting its entry from that same `PLUGINS` table.
-- `nvim-pack-lock.json` is the native lockfile for `vim.pack` and should stay checked in.
-- Stale plugins are pruned automatically on startup. You can also run:
-  - `:PackClean` to delete plugins that are no longer declared.
-  - `:PackSync` to delete stale plugins and force-update all managed plugins.
+Useful built-in management commands:
 
-## 🚀 Plugins
+- `:Lazy` for plugin state, updates, and profiling
+- `:Mason` for external tool management
+- `:checkhealth` for environment diagnostics
 
-### Active Neovim Plugins that I use
+## Optional External Tools
 
-- vim.pack - Native Neovim plugin manager
-- telescope.nvim - Fuzzy finder (PEAK NEOVIM)
-- nvim-tree.lua - File explorer
-- LSPConfig + Mason - Automatic language spec downloading 
-    - Neovim doesnt automatically via your lsp config know all the syntax highlighting or code completion stuff without Mason. You will need this, I recommend you never delete this or the LSP Config.
-- nvim-cmp - Useful for code completions, refactoring via code actions, code doc references, etc.
-- And more, check /lua/custom/plugins, all lua files will be named according to purpose or the plugin name itself.
+Some migrated workflows depend on external CLIs:
 
-## 🤝 Contributing
+- `lazygit` for `<leader>lg`
+- `copilot` CLI for `<leader>cc`
+- a Nerd Font for icons and UI glyphs
 
-Feel free to fork and adapt this configuration for your needs, but please don't contribute directly to this config. It's my personal configuration so use it if you like it but if you want to change something, copy this and make your own modifications on your own git repo :)
+## Enabled LazyVim Extras
 
-## 📄 License
+The active extras are declared in `lazyvim.json`. Right now the setup includes:
 
-MIT License - Use freely however you want!
+- Copilot
+- LuaSnip
+- Yanky
+- core DAP support
+- Telescope
+- Prettier formatting
+- JSON, Markdown, and TOML language support
+- ESLint integration
+- mini.hipatterns
+- Octo
+- project utilities
+- VS Code integration
+
+## Repository Layout
+
+- `init.lua`: early globals that must exist before LazyVim resolves extras
+- `lazyvim.json`: enabled LazyVim extras
+- `lua/config/`: global options, keymaps, and autocmds
+- `lua/plugins/`: plugin additions and plugin-specific overrides
+- `docs/`: migration architecture, inventory, acceptance criteria, and session log
+- `nvim.bak/`: legacy config kept only for migration reference
+
+## Current Workflow Highlights
+
+### Key Hints
+
+Press `<Space>` in normal mode to open which-key hints for the active leader groups.
+
+### File and Session Basics
+
+- `<leader>w`: write the current buffer
+- `<leader>qq`: quit Neovim
+- `<leader>qb`: delete the current buffer
+- `<leader>e`: toggle the explorer
+- `<leader>E`: open the explorer using the current working directory
+- `<leader>f`: format the current buffer
+
+### Search and Picker Workflows
+
+- `<leader>sf`: search files
+- `<leader>sg`: live grep
+- `<leader>sk`: search keymaps
+- `<leader>sh`: search help tags
+- `<leader>s.`: recent files
+- `<leader>s/`: open buffers
+- `<leader>/`: fuzzy search the current buffer
+- `<leader>sn`: search this Neovim config
+
+### Git and Terminal Workflows
+
+- `<leader>lg`: open LazyGit
+- `<leader>t`: toggle a reusable floating shell terminal
+- `<leader>cc`: toggle a reusable floating Copilot CLI terminal
+- `<Esc>` in terminal mode hides migrated floating terminals
+
+### LSP and Completion Workflows
+
+- `<leader>gd`: picker-based goto definition
+- `<leader>gi`: picker-based goto implementation
+- `<leader>gt`: picker-based goto type definition
+- `<leader>cd`: hover documentation
+- `<leader>ca`: code actions
+- Blink completion uses a manual popup: `<C-Space>` toggles the menu, `<CR>` accepts, `<C-J>` selects the next item, and `<Tab>` prioritizes Copilot suggestions before completion or snippet flow.
+
+## Customizing This Config
+
+This repo no longer uses the backup layout from `nvim.bak/` such as `vim.pack` or `lua/custom/*`.
+
+- Put general editor behavior in `lua/config/options.lua`, `lua/config/keymaps.lua`, and `lua/config/autocmds.lua`.
+- Put plugin ownership and plugin overrides in `lua/plugins/*.lua`.
+- Enable or disable LazyVim extras in `lazyvim.json`.
+- Use `nvim.bak/` as reference material only, not as an import target for active config code.
+
+## Formatting, Copilot, and Theme Notes
+
+- Prettier follows LazyVim's extra plus a repo-local config gate, so JS and TS formatting only takes the Prettier path when the project opts into Prettier.
+- `copilot.lua` suggestions are enabled, but `.env` and `.env.*` buffers are intentionally blocked from attaching.
+- Blink's Copilot completion source is disabled. Copilot is used here as inline suggestion support, not as a completion-menu source.
+- The active colorscheme is a One Dark variant implemented through `onedarkpro.nvim`.
+
+## License
+
+MIT. See `LICENSE`.
