@@ -2,22 +2,19 @@
 
 This repository is my active Neovim setup, built on top of [LazyVim](https://github.com/LazyVim/LazyVim) and `lazy.nvim`.
 
-The old standalone config still lives in `nvim.bak/` as a migration reference, but the active configuration is the repo root. Not every old behavior is being carried forward unchanged. The migration docs in `docs/` track what has been preserved, adapted, or intentionally dropped.
-
 ## What This Repo Contains
 
 - A LazyVim-based Neovim config with local overrides for theme, completion, Copilot, formatting, keymaps, terminal workflows, LSP navigation, and key hints.
 - `leader` set to `<Space>`.
 - `which-key.nvim` as the active key-hint system.
-- LazyVim's `vscode` extra already enabled, so there is no separate VS Code branch for this setup.
-- `nvim.bak/` kept in-tree only as a source of truth during migration.
+- LazyVim's `vscode` extra already enabled, allowing usage of this config from within VSCode using the [vscode-neovim extension](https://github.com/vscode-neovim/vscode-neovim)
 
 ## Quick Start
 
-Clone or link this repository to `~/.config/nvim`, then start Neovim:
+Clone or link this repository to `~/.config/nvim`(Unix/WSL/Mac/Linux), or `%userprofile%\AppData\Local\nvim`(Windows) then start Neovim:
 
-```bash
-git clone <repo> ~/.config/nvim
+```
+git clone <repo> [replace/with/config/location] # Be sure to replace path with the appropriate config location
 nvim
 ```
 
@@ -31,28 +28,11 @@ Useful built-in management commands:
 
 ## Optional External Tools
 
-Some migrated workflows depend on external CLIs:
+Some workflows depend on external CLIs/Tooling:
 
 - `lazygit` for `<leader>lg`
 - `copilot` CLI for `<leader>cc`
 - a Nerd Font for icons and UI glyphs
-
-## Enabled LazyVim Extras
-
-The active extras are declared in `lazyvim.json`. Right now the setup includes:
-
-- Copilot
-- LuaSnip
-- Yanky
-- core DAP support
-- Telescope
-- Prettier formatting
-- JSON, Markdown, and TOML language support
-- ESLint integration
-- mini.hipatterns
-- Octo
-- project utilities
-- VS Code integration
 
 ## Repository Layout
 
@@ -61,7 +41,6 @@ The active extras are declared in `lazyvim.json`. Right now the setup includes:
 - `lua/config/`: global options, keymaps, and autocmds
 - `lua/plugins/`: plugin additions and plugin-specific overrides
 - `docs/`: migration architecture, inventory, acceptance criteria, and session log
-- `nvim.bak/`: legacy config kept only for migration reference
 
 ## Current Workflow Highlights
 
@@ -75,15 +54,12 @@ Press `<Space>` in normal mode to open which-key hints for the active leader gro
 - `<leader>qq`: quit Neovim
 - `<leader>qb`: delete the current buffer
 - `<leader>e`: toggle the explorer
-- `<leader>E`: open the explorer using the current working directory
 - `<leader>f`: format the current buffer
 
 ### Search and Picker Workflows
 
 - `<leader>sf`: search files
 - `<leader>sg`: live grep
-- `<leader>sk`: search keymaps
-- `<leader>sh`: search help tags
 - `<leader>s.`: recent files
 - `<leader>s/`: open buffers
 - `<leader>/`: fuzzy search the current buffer
@@ -103,7 +79,7 @@ Press `<Space>` in normal mode to open which-key hints for the active leader gro
 - `<leader>gt`: picker-based goto type definition
 - `<leader>cd`: hover documentation
 - `<leader>ca`: code actions
-- Blink completion uses a manual popup: `<C-Space>` toggles the menu, `<CR>` accepts, `<C-J>` selects the next item, and `<Tab>` prioritizes Copilot suggestions before completion or snippet flow.
+- Blink completion uses a manual popup: `<C-Space>` toggles the menu
 
 ## Customizing This Config
 
@@ -112,13 +88,11 @@ This repo no longer uses the backup layout from `nvim.bak/` such as `vim.pack` o
 - Put general editor behavior in `lua/config/options.lua`, `lua/config/keymaps.lua`, and `lua/config/autocmds.lua`.
 - Put plugin ownership and plugin overrides in `lua/plugins/*.lua`.
 - Enable or disable LazyVim extras in `lazyvim.json`.
-- Use `nvim.bak/` as reference material only, not as an import target for active config code.
 
 ## Formatting, Copilot, and Theme Notes
 
 - Prettier follows LazyVim's extra plus a repo-local config gate, so JS and TS formatting only takes the Prettier path when the project opts into Prettier.
-- `copilot.lua` suggestions are enabled, but `.env` and `.env.*` buffers are intentionally blocked from attaching.
-- Blink's Copilot completion source is disabled. Copilot is used here as inline suggestion support, not as a completion-menu source.
+- `copilot.lua` suggestions are enabled, but `.env` and `.env.*` buffers are intentionally blocked from being read by copilot.
 - The active colorscheme is a One Dark variant implemented through `onedarkpro.nvim`.
 
 ## License
